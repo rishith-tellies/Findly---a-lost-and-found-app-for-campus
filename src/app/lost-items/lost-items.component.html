@@ -1,13 +1,18 @@
 <div class="min-h-screen bg-gray-900 text-white p-6">
-
   <h1 class="text-3xl font-bold text-red-400 mb-6 text-center">🎓 College Lost Items</h1>
 
   <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-    <input [(ngModel)]="searchText" placeholder="Search lost items..."
-      class="px-4 py-2 w-full md:w-1/2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500" />
+    <input
+      [(ngModel)]="searchText"
+      placeholder="Search lost items..."
+      class="px-4 py-2 w-full md:w-1/2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+    />
 
-    <select [(ngModel)]="selectedCategory"
-      class="px-4 py-2 w-full md:w-1/4 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+    <select
+      [(ngModel)]="selectedCategory"
+      name="category"
+      class="px-4 py-2 w-full md:w-1/4 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+    >
       <option value="">All Categories</option>
       <option value="ID Card">ID Card</option>
       <option value="Electronics">Electronics</option>
@@ -17,12 +22,17 @@
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    <div *ngFor="let item of filteredItems()" class="bg-[#1f1f1f] border border-red-600 rounded-lg shadow-lg">
+    <div
+      *ngFor="let item of filteredItems()"
+      class="bg-[#1f1f1f] border border-red-600 rounded-lg shadow-lg"
+    >
       <img [src]="item.imageUrl" class="w-full h-40 object-cover rounded-t-lg" />
       <div class="p-4">
         <h3 class="text-lg font-bold text-red-400">{{ item.name }}</h3>
         <p class="text-sm text-gray-300">{{ item.description }}</p>
-        <span class="text-xs mt-2 inline-block bg-red-700 px-3 py-1 rounded-full">#{{ item.category }}</span>
+        <span class="text-xs mt-2 inline-block bg-red-700 px-3 py-1 rounded-full">
+          #{{ item.category }}
+        </span>
       </div>
     </div>
   </div>

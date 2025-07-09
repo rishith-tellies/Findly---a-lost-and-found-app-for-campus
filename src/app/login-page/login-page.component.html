@@ -1,0 +1,24 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-900">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="bg-gray-800 p-8 rounded shadow-lg w-full max-w-md">
+    <h2 class="text-2xl text-emerald-400 font-bold mb-6 text-center">Login</h2>
+
+    <label class="text-white block mb-1">Email</label>
+    <input formControlName="email" type="email"
+      class="w-full p-2 mb-2 bg-gray-700 text-white rounded" />
+
+    <label class="text-white block mb-1">Password</label>
+    <input formControlName="password" type="password"
+      class="w-full p-2 mb-2 bg-gray-700 text-white rounded" />
+
+    <button type="submit"
+      class="w-full bg-emerald-500 text-white py-2 mt-4 rounded hover:bg-emerald-600">
+      Login
+    </button>
+
+    <button type="button"
+      (click)="onForgotPassword()"
+      class="text-sm text-emerald-300 mt-4 underline w-full text-center">
+      Forgot Password?
+    </button>
+  </form>
+</div>

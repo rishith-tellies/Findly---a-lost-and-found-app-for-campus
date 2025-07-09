@@ -7,8 +7,8 @@ import { ItemService } from '../item.service';
 })
 export class LostItemsComponent implements OnInit {
   items: any[] = [];
-  searchText = '';
-  selectedCategory = '';
+  searchText: string = '';
+  selectedCategory: string = '';
 
   constructor(private itemService: ItemService) {}
 

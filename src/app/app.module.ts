@@ -8,19 +8,21 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
 import { LayoutComponent } from './layout/layout.component';
+import { RegistrationComponent } from './registration/registration.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'register', pathMatch: 'full' }, // 👈 Default now goes to register
+  { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginPageComponent },
   {
-    path: '',
+    path: 'dashboard',
     component: LayoutComponent,
     children: [
       { path: 'found', component: FoundItemsComponent },
-      { path: 'lost', component: LostItemsComponent },
-    ],
+      { path: 'lost', component: LostItemsComponent }
+    ]
   },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: 'register' } // 👈 fallback also goes to register
 ];
 
 @NgModule({
@@ -30,9 +32,15 @@ const routes: Routes = [
     FoundItemsComponent,
     LostItemsComponent,
     LayoutComponent,
+    RegistrationComponent
   ],
-  imports: [BrowserModule, ReactiveFormsModule, FormsModule, RouterModule.forRoot(routes)],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule.forRoot(routes)
+  ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

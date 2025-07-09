@@ -6,21 +6,26 @@ import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.css'],
+  styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   get email() {
     return this.loginForm.get('email');
   }
+
   get password() {
     return this.loginForm.get('password');
   }
@@ -32,21 +37,16 @@ export class LoginPageComponent {
     }
 
     const { email, password } = this.loginForm.value;
-    const loginSuccess = this.authService.login(email, password);
 
-    if (loginSuccess) {
+    if (this.authService.login(email, password)) {
       const role = this.authService.getRole();
-      if (role === 'admin') {
-        this.router.navigate(['/found']);
-      } else {
-        this.router.navigate(['/lost']);
-      }
+      this.router.navigate([role === 'admin' ? '/found' : '/lost']);
     } else {
-      alert('❌ Invalid email or password!');
+      alert('❌ Invalid email or password');
     }
   }
 
   onForgotPassword(): void {
-    alert('📧 Password reset link would be sent to your email (not implemented).');
+    alert('📧 Reset link would be sent to your Kristu Jayanti email.');
   }
 }

@@ -6,19 +6,17 @@ export class AuthService {
 
   login(email: string, password: string): boolean {
     const lowerEmail = email.toLowerCase();
+    const domain = '@kristujayanti.com';
 
-    // Student regex: 2 digits + 2 to 4 letters + 2 digits + @kristujayanti.com
-    const studentRegex = /^[0-9]{2}[a-z]{2,4}[0-9]{2}@kristujayanti\.com$/;
+    const isStudent = /^[0-9]{2}[a-z]{3,4}[0-9]{2}@kristujayanti\.com$/.test(lowerEmail);
+    const isKristuEmail = lowerEmail.endsWith(domain);
 
-    // Admin regex remains same
-    const adminRegex = /^[0-9]{2}admin@kristujayanti\.com$/;
-
-    if (studentRegex.test(lowerEmail) && password === 'student123') {
+    if (isStudent && password === 'student123') {
       this.userRole = 'student';
       return true;
     }
 
-    if (adminRegex.test(lowerEmail) && password === 'admin123') {
+    if (!isStudent && isKristuEmail && password === 'admin123') {
       this.userRole = 'admin';
       return true;
     }

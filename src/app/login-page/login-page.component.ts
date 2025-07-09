@@ -30,20 +30,15 @@ export class LoginPageComponent {
     return this.loginForm.get('password');
   }
 
-  onLogin(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
+  onLogin() {
+    const email = this.email?.value;
+    const password = this.password?.value;
 
-    const { email, password } = this.loginForm.value;
-    const loginSuccess = this.authService.login(email, password);
-
-    if (loginSuccess) {
-      const role = this.authService.getRole(); // 'admin' or 'student'
-      this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
+    const success = this.authService.login(email, password);
+    if (success) {
+      this.router.navigate(['/lost']); // Navigate to dashboard
     } else {
-      alert('❌ Invalid email or password');
+      alert('Invalid email or password');
     }
   }
 

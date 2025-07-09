@@ -1,30 +1,37 @@
-// src/app/auth.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private role: 'student' | 'admin' | null = null;
+  private userRole: 'student' | 'admin' | null = null;
 
   login(email: string, password: string): boolean {
-    if (!email.endsWith('@kristujayanti.com')) return false;
-    if (!password || password.trim() === '') return false;
+    const lowerEmail = email.toLowerCase();
 
-    if (/^\d{2}admin@kristujayanti\.com$/.test(email)) {
-      this.role = 'admin';
-    } else if (/^\d{2}[a-z]{3}\d{2}@kristujayanti\.com$/.test(email)) {
-      this.role = 'student';
-    } else {
-      return false;
+    // Student regex: 2 digits + 2 to 4 letters + 2 digits + @kristujayanti.com
+    const studentRegex = /^[0-9]{2}[a-z]{2,4}[0-9]{2}@kristujayanti\.com$/;
+
+    // Admin regex remains same
+    const adminRegex = /^[0-9]{2}admin@kristujayanti\.com$/;
+
+    if (studentRegex.test(lowerEmail) && password === 'student123') {
+      this.userRole = 'student';
+      return true;
     }
 
-    return true;
+    if (adminRegex.test(lowerEmail) && password === 'admin123') {
+      this.userRole = 'admin';
+      return true;
+    }
+
+    this.userRole = null;
+    return false;
   }
 
-  getRole(): 'admin' | 'student' | null {
-    return this.role;
+  getRole(): 'student' | 'admin' | null {
+    return this.userRole;
   }
 
   logout(): void {
-    this.role = null;
+    this.userRole = null;
   }
 }

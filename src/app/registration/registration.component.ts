@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -6,8 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent {
-  showForm = false;
-
   formData = {
     fullName: '',
     email: '',
@@ -16,16 +15,16 @@ export class RegistrationComponent {
     confirmPassword: ''
   };
 
-  onGetStarted(): void {
-    this.showForm = true;
-  }
+  constructor(private router: Router) {}
 
   onRegister(): void {
     if (this.formData.password !== this.formData.confirmPassword) {
       alert('❌ Passwords do not match!');
       return;
     }
-    console.log('✅ Registered Data:', this.formData);
-    alert('🎉 Registration Successful!');
+
+    // Optional: save form data to a service
+    alert('✅ Registration Successful!');
+    this.router.navigate(['/login']);
   }
 }

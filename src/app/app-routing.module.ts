@@ -1,18 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+import { InterfaceComponent } from './interface/interface.component';
+import { RegistrationComponent } from './registration/registration.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
-import { LoginPageComponent } from './login-page/login-page.component';
 
 const routes: Routes = [
-  // ✅ Show login on first load
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // 🌟 Default landing page (Interface - Get Started)
+  { path: '', component: InterfaceComponent },
 
-  // ✅ Login page route
+  // 🔐 Login page
   { path: 'login', component: LoginPageComponent },
 
-  // ✅ Protected layout routes (after login)
+  // 📝 Registration page
+  { path: 'register', component: RegistrationComponent },
+
+  // 🗂️ Dashboard (admin/student views)
   {
     path: 'dashboard',
     component: LayoutComponent,
@@ -23,8 +29,8 @@ const routes: Routes = [
     ]
   },
 
-  // ✅ Wildcard redirect
-  { path: '**', redirectTo: 'login' }
+  // 🚫 Fallback route
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

@@ -37,16 +37,21 @@ export class LoginPageComponent {
     }
 
     const { email, password } = this.loginForm.value;
+    const loginSuccess = this.authService.login(email, password);
 
-    if (this.authService.login(email, password)) {
-      const role = this.authService.getRole();
-      this.router.navigate([role === 'admin' ? '/found' : '/lost']);
+    if (loginSuccess) {
+      const role = this.authService.getRole(); // 'admin' or 'student'
+      this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
     } else {
       alert('❌ Invalid email or password');
     }
   }
 
   onForgotPassword(): void {
-    alert('📧 Reset link would be sent to your Kristu Jayanti email.');
+    alert('📧 A reset link will be sent to your Kristu Jayanti email address.');
+  }
+
+  onCreateAccount(): void {
+    this.router.navigate(['/register']);
   }
 }

@@ -9,9 +9,10 @@ import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
 import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
+import { InterfaceComponent } from './interface/interface.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'register', pathMatch: 'full' }, // 👈 Default now goes to register
+  { path: '', component: InterfaceComponent }, // ✅ Landing page
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginPageComponent },
   {
@@ -22,7 +23,7 @@ const routes: Routes = [
       { path: 'lost', component: LostItemsComponent }
     ]
   },
-  { path: '**', redirectTo: 'register' } // 👈 fallback also goes to register
+  { path: '**', redirectTo: '' } // ✅ fallback to landing page
 ];
 
 @NgModule({
@@ -32,13 +33,14 @@ const routes: Routes = [
     FoundItemsComponent,
     LostItemsComponent,
     LayoutComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    InterfaceComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes) // ✅ Add this to enable routing
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,18 +7,13 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 const routes: Routes = [
-  // 🌟 Default landing page (Interface - Get Started)
   { path: '', component: InterfaceComponent },
-
-  // 🔐 Login page
-  { path: 'login', component: LoginPageComponent },
-
-  // 📝 Registration page
   { path: 'register', component: RegistrationComponent },
-
-  // 🗂️ Dashboard (admin/student views)
+  { path: 'login', component: LoginPageComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   {
     path: 'dashboard',
     component: LayoutComponent,
@@ -28,8 +23,6 @@ const routes: Routes = [
       { path: '', redirectTo: 'found', pathMatch: 'full' }
     ]
   },
-
-  // 🚫 Fallback route
   { path: '**', redirectTo: '' }
 ];
 

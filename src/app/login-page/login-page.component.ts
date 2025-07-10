@@ -33,12 +33,17 @@ export class LoginPageComponent {
     return this.loginForm.get('password');
   }
 
+
   // ✅ Handle form submission
+
+  // ✅ Handle Login
+
   onLogin(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched(); // Show errors
       return;
     }
+
 
     const { email, password } = this.loginForm.value;
 
@@ -53,6 +58,15 @@ export class LoginPageComponent {
       } else {
         this.router.navigate(['/dashboard/lost']);
       }
+
+    const email = this.email?.value;
+    const password = this.password?.value;
+
+    const success = this.authService.login(email, password);
+    if (success) {
+      const role = this.authService.getRole();
+      this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
+
     } else {
       alert('❌ Invalid email or password');
     }

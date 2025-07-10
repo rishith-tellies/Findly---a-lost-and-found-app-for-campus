@@ -11,7 +11,7 @@ export class AuthService {
     const isStudent = /^[0-9]{2}[a-z]{3,4}[0-9]{2}@kristujayanti\.com$/.test(lowerEmail);
     const isKristuEmail = lowerEmail.endsWith(domain);
 
-    if (isStudent && password === 'student123') {
+    if (isStudent && password === '') {
       this.userRole = 'student';
       return true;
     }

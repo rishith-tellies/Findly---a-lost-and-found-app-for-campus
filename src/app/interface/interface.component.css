@@ -1,22 +1,46 @@
+/* Fade in from below */
 @keyframes fadeInUp {
-  from {
+  0% {
     opacity: 0;
     transform: translateY(30px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out both;
 }
 
-/* Optional delays using Tailwind-style utilities */
-.delay-300ms {
+.delay-300 {
   animation-delay: 0.3s;
 }
-.delay-500ms {
+
+.delay-500 {
   animation-delay: 0.5s;
+}
+
+/* Slide entire screen upward and keep background color */
+@keyframes slideUpOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+.scroll-up-out {
+  animation: slideUpOut 0.9s ease-in-out forwards;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background: linear-gradient(to bottom right, #111827, #1f2937, #065f46); /* Matches Tailwind gradient */
 }

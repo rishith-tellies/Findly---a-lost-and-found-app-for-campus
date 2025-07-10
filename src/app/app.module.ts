@@ -13,17 +13,19 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 
 // ✅ Import routing module that contains all route definitions
 import { AppRoutingModule } from './app-routing.module';
+import { AddItemComponent } from './add-item/add-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    AddItemComponent,
     LoginPageComponent,
     FoundItemsComponent,
     LostItemsComponent,
     LayoutComponent,
     RegistrationComponent,
     InterfaceComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,

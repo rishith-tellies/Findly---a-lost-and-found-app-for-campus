@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AddItemComponent } from './add-item/add-item.component';
 
 import { InterfaceComponent } from './interface/interface.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -14,19 +15,19 @@ const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-
+  { path: 'add-item/:type', component: AddItemComponent },
   {
     path: 'dashboard',
     component: LayoutComponent,
     children: [
       { path: 'found', component: FoundItemsComponent },
       { path: 'lost', component: LostItemsComponent },
-      { path: '', redirectTo: 'found', pathMatch: 'full' } // default dashboard route
+      { path: '', redirectTo: 'found', pathMatch: 'full' }
     ]
   },
-
-  { path: '**', redirectTo: '' } // wildcard fallback
+  { path: '**', redirectTo: '' }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

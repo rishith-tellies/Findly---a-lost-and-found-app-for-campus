@@ -4,6 +4,11 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private userRole: 'student' | 'admin' | null = null;
 
+  constructor() {
+    const storedRole = localStorage.getItem('userRole') as 'student' | 'admin' | null;
+    this.userRole = storedRole;
+  }
+
   login(email: string, password: string): boolean {
     const lowerEmail = email.toLowerCase();
     const domain = '@kristujayanti.com';
@@ -29,7 +34,23 @@ export class AuthService {
     return this.userRole;
   }
 
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('userRole');
+  }
+
   logout(): void {
     this.userRole = null;
   }
+
+  private setRole(role: 'student' | 'admin') {
+    this.userRole = role;
+    localStorage.setItem('userRole', role);
+  }
+
+
+  private clearRole() {
+    this.userRole = null;
+    localStorage.removeItem('userRole');
+  }
+
 }

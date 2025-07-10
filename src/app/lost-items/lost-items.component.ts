@@ -11,7 +11,7 @@ interface LostItem {
 @Component({
   selector: 'app-lost-items',
   templateUrl: './lost-items.component.html',
-  styleUrls: ['./lost-items.component.css'] // optional if you use CSS
+  styleUrls: ['./lost-items.component.css']
 })
 export class LostItemsComponent implements OnInit {
   items: LostItem[] = [];
@@ -34,7 +34,6 @@ export class LostItemsComponent implements OnInit {
     );
   }
 
-  // Optional: reset filter
   clearFilters(): void {
     this.searchText = '';
     this.selectedCategory = '';

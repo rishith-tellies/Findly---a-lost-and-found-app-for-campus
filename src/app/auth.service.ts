@@ -4,6 +4,11 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private userRole: 'student' | 'admin' | null = null;
 
+  constructor() {
+    const storedRole = localStorage.getItem('userRole') as 'student' | 'admin' | null;
+    this.userRole = storedRole;
+  }
+
   login(email: string, password: string): boolean {
     const lowerEmail = email.toLowerCase();
     const domain = '@kristujayanti.com';
@@ -12,16 +17,16 @@ export class AuthService {
     const isKristuEmail = lowerEmail.endsWith(domain);
 
     if (isStudent && password === 'student123') {
-      this.userRole = 'student';
+      this.setRole('student');
       return true;
     }
 
     if (!isStudent && isKristuEmail && password === 'admin123') {
-      this.userRole = 'admin';
+      this.setRole('admin');
       return true;
     }
 
-    this.userRole = null;
+    this.clearRole();
     return false;
   }
 
@@ -29,7 +34,21 @@ export class AuthService {
     return this.userRole;
   }
 
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('userRole');
+  }
+
   logout(): void {
+    this.clearRole();
+  }
+
+  private setRole(role: 'student' | 'admin') {
+    this.userRole = role;
+    localStorage.setItem('userRole', role);
+  }
+
+  private clearRole() {
     this.userRole = null;
+    localStorage.removeItem('userRole');
   }
 }

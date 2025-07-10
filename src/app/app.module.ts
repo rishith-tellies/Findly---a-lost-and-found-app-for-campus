@@ -12,19 +12,20 @@ import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
 
 const routes: Routes = [
-  { path: '', component: InterfaceComponent }, // ✅ Landing page
+  { path: '', component: InterfaceComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginPageComponent },
   {
-    path: 'dashboard',
+    path: '',
     component: LayoutComponent,
     children: [
       { path: 'found', component: FoundItemsComponent },
       { path: 'lost', component: LostItemsComponent }
     ]
   },
-  { path: '**', redirectTo: '' } // ✅ fallback to landing page
+  { path: '**', redirectTo: '' } // ✅ Make sure this line ends the array
 ];
+
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ const routes: Routes = [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forRoot(routes) // ✅ Add this to enable routing
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]

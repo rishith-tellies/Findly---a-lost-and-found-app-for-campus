@@ -10,45 +10,61 @@ import { AuthService } from '../auth.service';
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
+  isAnimating = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
+    // Initialize reactive form
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
+  // Getter for email control
   get email() {
     return this.loginForm.get('email');
   }
 
+  // Getter for password control
   get password() {
     return this.loginForm.get('password');
   }
 
+  // Login function with animation and routing
   onLogin(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      this.loginForm.markAllAsTouched(); // show all errors
       return;
     }
 
     const { email, password } = this.loginForm.value;
+
     const loginSuccess = this.authService.login(email, password);
 
     if (loginSuccess) {
-      const role = this.authService.getRole(); // 'admin' or 'student'
-      this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
+      this.isAnimating = true;
+
+      // Delay navigation to allow animation to finish
+      setTimeout(() => {
+        const role = this.authService.getRole();
+
+        if (role === 'admin') {
+          this.router.navigate(['/dashboard/found']);
+        } else {
+          this.router.navigate(['/dashboard/lost']);
+        }
+      }, 500); // match with .animate-fade-out-down duration
     } else {
       alert('❌ Invalid email or password');
     }
   }
 
   onForgotPassword(): void {
-    alert('📧 A reset link will be sent to your Kristu Jayanti email address.');
+    this.router.navigate(['/forgot-password']);
   }
 
   onCreateAccount(): void {

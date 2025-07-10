@@ -23,7 +23,6 @@ export class RegistrationComponent {
       return;
     }
 
-    // Optional: save form data to a service
     alert('✅ Registration Successful!');
     this.router.navigate(['/login']);
   }

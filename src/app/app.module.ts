@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -11,6 +10,8 @@ import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+
+// ✅ Import routing module that contains all route definitions
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -28,7 +29,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule // ✅ Only this is needed for routing
   ],
   providers: [],
   bootstrap: [AppComponent]

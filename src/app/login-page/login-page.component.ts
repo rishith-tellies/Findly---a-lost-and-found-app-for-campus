@@ -17,40 +17,47 @@ export class LoginPageComponent {
     private authService: AuthService,
     private router: Router
   ) {
+    // Initialize reactive form
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
+  // Getter for email control
   get email() {
     return this.loginForm.get('email');
   }
 
+  // Getter for password control
   get password() {
     return this.loginForm.get('password');
   }
 
+  // Login function with animation and routing
   onLogin(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      this.loginForm.markAllAsTouched(); // show all errors
       return;
     }
 
     const { email, password } = this.loginForm.value;
+
     const loginSuccess = this.authService.login(email, password);
 
     if (loginSuccess) {
       this.isAnimating = true;
 
+      // Delay navigation to allow animation to finish
       setTimeout(() => {
         const role = this.authService.getRole();
+
         if (role === 'admin') {
           this.router.navigate(['/dashboard/found']);
         } else {
           this.router.navigate(['/dashboard/lost']);
         }
-      }, 500);
+      }, 500); // match with .animate-fade-out-down duration
     } else {
       alert('❌ Invalid email or password');
     }

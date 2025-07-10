@@ -9,7 +9,9 @@ import { Router } from '@angular/router';
 export class InterfaceComponent {
   constructor(private router: Router) {}
 
+  // ✅ Navigate to Login Page
   onGetStarted(): void {
+
     const interfacePage = document.getElementById('interfacePage');
 
     if (interfacePage) {
@@ -20,5 +22,8 @@ export class InterfaceComponent {
         this.router.navigate(['/login']);
       }, 1000); // must match animation duration
     }
+
+    this.router.navigate(['/login']);
+
   }
 }

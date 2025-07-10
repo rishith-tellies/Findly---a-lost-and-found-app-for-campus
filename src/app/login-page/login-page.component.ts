@@ -22,6 +22,7 @@ export class LoginPageComponent {
     });
   }
 
+  // ✅ Form Getters
   get email() {
     return this.loginForm.get('email');
   }
@@ -30,6 +31,21 @@ export class LoginPageComponent {
     return this.loginForm.get('password');
   }
 
+
+  // ✅ Handle Login
+  onLogin(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    const { email, password } = this.loginForm.value;
+    const loginSuccess = this.authService.login(email, password);
+
+    if (loginSuccess) {
+      const role = this.authService.getRole();
+      this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
+
   onLogin() {
     const email = this.email?.value;
     const password = this.password?.value;
@@ -37,15 +53,18 @@ export class LoginPageComponent {
     const success = this.authService.login(email, password);
     if (success) {
       this.router.navigate(['/lost']); // Navigate to dashboard
+
     } else {
       alert('Invalid email or password');
     }
   }
 
+  // ✅ Navigate to Forgot Password Page
   onForgotPassword(): void {
-    alert('📧 A reset link will be sent to your Kristu Jayanti email address.');
+    this.router.navigate(['/forgot-password']);
   }
 
+  // ✅ Navigate to Register Page
   onCreateAccount(): void {
     this.router.navigate(['/register']);
   }

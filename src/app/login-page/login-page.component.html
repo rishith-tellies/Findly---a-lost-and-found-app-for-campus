@@ -1,3 +1,4 @@
+
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-emerald-800 px-4">
   <form
     [formGroup]="loginForm"
@@ -41,25 +42,19 @@
       Login
     </button>
 
-    <!-- Forgot Password -->
-    <button
-      type="button"
-      (click)="onForgotPassword()"
-      class="w-full text-sm text-emerald-300 mt-4 hover:underline text-center"
-    >
-      Forgot Password?
-    </button>
+    <!-- Forgot Password Link -->
+    <div class="w-full text-sm text-center mt-4">
+      <a routerLink="/forgot-password" class="text-emerald-300 hover:underline">
+        Forgot Password?
+      </a>
+    </div>
 
     <!-- Create Account Link -->
     <div class="mt-6 text-center">
       <span class="text-sm text-gray-400">Don’t have an account?</span>
-      <button
-        type="button"
-        (click)="onCreateAccount()"
-        class="text-sm text-emerald-300 hover:underline ml-1"
-      >
+      <a routerLink="/register" class="text-sm text-emerald-300 hover:underline ml-1">
         Create Account
-      </button>
+      </a>
     </div>
   </form>
 </div>

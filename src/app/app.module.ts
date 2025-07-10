@@ -1,7 +1,7 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -10,6 +10,9 @@ import { LostItemsComponent } from './lost-items/lost-items.component';
 import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
+
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { AppRoutingModule } from './app-routing.module';
 
 const routes: Routes = [
   { path: '', component: InterfaceComponent },
@@ -27,6 +30,7 @@ const routes: Routes = [
 ];
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,13 +39,18 @@ const routes: Routes = [
     LostItemsComponent,
     LayoutComponent,
     RegistrationComponent,
-    InterfaceComponent
+    InterfaceComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
+
+    AppRoutingModule
+
     RouterModule.forRoot(routes)
+
   ],
   providers: [],
   bootstrap: [AppComponent]

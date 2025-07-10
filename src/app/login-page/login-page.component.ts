@@ -31,7 +31,6 @@ export class LoginPageComponent {
     return this.loginForm.get('password');
   }
 
-
   // ✅ Handle Login
   onLogin(): void {
     if (this.loginForm.invalid) {
@@ -45,17 +44,8 @@ export class LoginPageComponent {
     if (loginSuccess) {
       const role = this.authService.getRole();
       this.router.navigate([role === 'admin' ? '/dashboard/found' : '/dashboard/lost']);
-
-  onLogin() {
-    const email = this.email?.value;
-    const password = this.password?.value;
-
-    const success = this.authService.login(email, password);
-    if (success) {
-      this.router.navigate(['/lost']); // Navigate to dashboard
-
     } else {
-      alert('Invalid email or password');
+      alert('❌ Invalid email or password');
     }
   }
 

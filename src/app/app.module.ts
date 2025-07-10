@@ -10,26 +10,8 @@ import { LostItemsComponent } from './lost-items/lost-items.component';
 import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
-
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AppRoutingModule } from './app-routing.module';
-
-const routes: Routes = [
-  { path: '', component: InterfaceComponent },
-  { path: 'register', component: RegistrationComponent },
-  { path: 'login', component: LoginPageComponent },
-  {
-    path: '',
-    component: LayoutComponent,
-    children: [
-      { path: 'found', component: FoundItemsComponent },
-      { path: 'lost', component: LostItemsComponent }
-    ]
-  },
-  { path: '**', redirectTo: '' } // ✅ Make sure this line ends the array
-];
-
-
 
 @NgModule({
   declarations: [
@@ -46,11 +28,7 @@ const routes: Routes = [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-
     AppRoutingModule
-
-    RouterModule.forRoot(routes)
-
   ],
   providers: [],
   bootstrap: [AppComponent]

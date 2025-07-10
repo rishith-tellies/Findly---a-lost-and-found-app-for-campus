@@ -2,6 +2,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -46,9 +47,7 @@ const routes: Routes = [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-
-    AppRoutingModule
-
+    AppRoutingModule,
     RouterModule.forRoot(routes)
 
   ],

@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 export class InterfaceComponent {
   constructor(private router: Router) {}
 
+  // ✅ Navigate to Login Page
   onGetStarted(): void {
-    this.router.navigate(['/login']); // Navigates to login page
+    this.router.navigate(['/login']);
   }
 }

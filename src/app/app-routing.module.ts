@@ -16,11 +16,13 @@ const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'add-item/:type', component: AddItemComponent },
+  { path: 'layout', component: LayoutComponent },
   {
     path: 'dashboard',
     component: LayoutComponent,
     children: [
       { path: 'found', component: FoundItemsComponent },
+    
       { path: 'lost', component: LostItemsComponent },
       { path: '', redirectTo: 'found', pathMatch: 'full' }
     ]

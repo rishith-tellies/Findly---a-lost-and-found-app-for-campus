@@ -57,6 +57,11 @@ export class LoginPageComponent {
         } else {
           this.router.navigate(['/dashboard/lost']);
         }
+        if (role === 'student'){
+          this.router.navigate(['/layout']);
+          console.log('going to layout');
+          
+        }
       }, 500); // match with .animate-fade-out-down duration
     } else {
       alert('❌ Invalid email or password');

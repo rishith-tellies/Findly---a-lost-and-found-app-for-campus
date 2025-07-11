@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-layout',
@@ -9,6 +10,7 @@ import { AuthService } from '../auth.service';
 })
 export class LayoutComponent {
   sidebarOpen = false;
+  showDropdown = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -20,5 +22,10 @@ export class LayoutComponent {
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

@@ -10,6 +10,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
 import { ProfileComponent } from './profile/profile.component';
+import { MyPostsComponent } from './dashboard/my-posts/my-posts.component';
 
 const routes: Routes = [
   { path: '', component: InterfaceComponent }, // Landing page
@@ -19,14 +20,13 @@ const routes: Routes = [
   { path: 'add-item/:type', component: AddItemComponent },
   { path: 'layout', component: LayoutComponent },
   { path: 'profile', component: ProfileComponent },
-  
   {
     path: 'dashboard',
     component: LayoutComponent,
     children: [
       { path: 'found', component: FoundItemsComponent },
-    
       { path: 'lost', component: LostItemsComponent },
+      { path: 'my-posts', component: MyPostsComponent },
       { path: '', redirectTo: 'found', pathMatch: 'full' }
     ]
   },

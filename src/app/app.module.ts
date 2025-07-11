@@ -15,6 +15,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { AppRoutingModule } from './app-routing.module';
 import { AddItemComponent } from './add-item/add-item.component';
 import { ProfileComponent } from './profile/profile.component';
+import { MyPostsComponent } from './dashboard/my-posts/my-posts.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ProfileComponent } from './profile/profile.component';
     InterfaceComponent,
     ForgotPasswordComponent,
     ProfileComponent,
+    MyPostsComponent,
   ],
   imports: [
     BrowserModule,

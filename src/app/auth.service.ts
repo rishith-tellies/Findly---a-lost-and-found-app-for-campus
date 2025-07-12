@@ -5,6 +5,10 @@ export class AuthService {
   private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;
 
   constructor() {
+    this.loadUserFromStorage();
+  }
+
+  private loadUserFromStorage() {
     const email = localStorage.getItem('email');
     const role = localStorage.getItem('userRole') as 'student' | 'admin' | null;
     const name = localStorage.getItem('userName');
@@ -22,12 +26,12 @@ export class AuthService {
     const isKristuEmail = lowerEmail.endsWith(domain);
 
     if (isStudent && password === 'student123') {
-      this.setUser(lowerEmail, 'student', 'John Student'); // 🔁 Use actual name if you have it
+      this.setUser(lowerEmail, 'student', 'John Student');
       return true;
     }
 
     if (!isStudent && isKristuEmail && password === 'admin123') {
-      this.setUser(lowerEmail, 'admin', 'Admin User'); // 🔁 Change name accordingly
+      this.setUser(lowerEmail, 'admin', 'Admin User');
       return true;
     }
 
@@ -62,6 +66,20 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.currentUser;
+    const email = localStorage.getItem('email');
+    const role = localStorage.getItem('userRole');
+    const name = localStorage.getItem('userName');
+
+    if (email && role && name) {
+      this.currentUser = { email, role: role as 'student' | 'admin', name };
+      return true;
+    }
+
+    return false;
+  }
+
+  // ✅ NEW METHOD
+  isAdmin(): boolean {
+    return this.currentUser?.role === 'admin';
   }
 }

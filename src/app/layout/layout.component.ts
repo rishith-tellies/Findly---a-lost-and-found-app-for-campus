@@ -13,6 +13,9 @@ export class LayoutComponent implements OnInit {
   showDropdown = false;
   showLogoutModal = false;
 
+  // ✅ Add this to show/hide the found/lost buttons
+  showOptions = false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -27,6 +30,11 @@ export class LayoutComponent implements OnInit {
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  // ✅ Toggle floating buttons visibility
+  toggleOptions(): void {
+    this.showOptions = !this.showOptions;
   }
 
   // Called when logout button is clicked

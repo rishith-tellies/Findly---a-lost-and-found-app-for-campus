@@ -69,7 +69,7 @@ export class FoundItemsComponent implements OnInit {
         location: 'Cafeteria entrance',
         date: '2023-05-15',
         contact: 'found-items@college.edu',
-        imageUrl: 'assets/id-card-placeholder.jpg'
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEpJHSx4mOEDVxzoGQ1tLbhdPogcu-XEJO7g&s'
       },
       {
         id: 2,
@@ -79,7 +79,7 @@ export class FoundItemsComponent implements OnInit {
         location: 'Computer lab',
         date: '2023-06-20',
         contact: 'found-items@college.edu',
-        imageUrl: 'assets/earbuds-placeholder.jpg'
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmmFgY_e-pwSeA5zA9q9V34Y3H4Z3PmtI9ww&s'
       },
       {
         id: 3,

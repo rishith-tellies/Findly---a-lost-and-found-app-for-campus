@@ -69,7 +69,7 @@ export class LostItemsComponent implements OnInit {
         location: 'Library entrance',
         date: '2023-05-15',
         contact: 'john.doe@college.edu',
-        imageUrl: 'assets/id-card-placeholder.jpg'
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTioKTYh4Rt-jdwsOfaTQb_BMAHqY-TVNLLVg&s'
       },
       {
         id: 2,
@@ -79,7 +79,7 @@ export class LostItemsComponent implements OnInit {
         location: 'Computer lab',
         date: '2023-06-20',
         contact: 'sarah.smith@college.edu',
-        imageUrl: 'assets/earbuds-placeholder.jpg'
+        imageUrl: 'https://images-cdn.ubuy.co.in/67d6979fc38f365f8c3f8352-wireless-earbuds-bluetooth-5-3-built-in.jpg'
       },
       {
         id: 3,
@@ -89,7 +89,7 @@ export class LostItemsComponent implements OnInit {
         location: 'Lecture Hall A',
         date: '2023-06-18',
         contact: 'mike.johnson@college.edu',
-        imageUrl: 'assets/book-placeholder.jpg'
+        imageUrl: 'https://www.vivadigital.in/vupload/books/book_160419153403_73.jpg'
       },
       {
         id: 4,
@@ -99,7 +99,7 @@ export class LostItemsComponent implements OnInit {
         location: 'Library study area',
         date: '2023-06-22',
         contact: 'alex.wilson@college.edu',
-        imageUrl: 'assets/library-card-placeholder.jpg'
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxTWTMLoQwfJmNV1m6bqBjX7z4gUbMf8LZtQ&s'
       }
     ];
   }

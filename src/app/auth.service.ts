@@ -1,56 +1,48 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+
+interface LoginResponse {
+  token: string;
+  role: 'student' | 'admin';
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private apiUrl = 'http://localhost:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
-  constructor() {
-    const storedRole = localStorage.getItem('userRole') as 'student' | 'admin' | null;
+  constructor(private http: HttpClient) {
+    const storedRole = localStorage.getItem('role') as 'student' | 'admin' | null;
     this.userRole = storedRole;
   }
 
-  login(email: string, password: string): boolean {
-    const lowerEmail = email.toLowerCase();
-    const domain = '@kristujayanti.com';
-
-    const isStudent = /^[0-9]{2}[a-z]{3,4}[0-9]{2}@kristujayanti\.com$/.test(lowerEmail);
-    const isKristuEmail = lowerEmail.endsWith(domain);
-
-    if (isStudent && password === 'student123') {
-      this.userRole = 'student';
-      return true;
-    }
-
-    if (!isStudent && isKristuEmail && password === 'admin123') {
-      this.userRole = 'admin';
-      return true;
-    }
-
-    this.userRole = null;
-    return false;
+  // ✅ Call backend to login
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap((res) => {
+        // Store token and role
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
+        this.userRole = res.role;
+      })
+    );
   }
 
+  // ✅ Get role
   getRole(): 'student' | 'admin' | null {
     return this.userRole;
   }
 
+  // ✅ Check if token exists
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('userRole');
+    return !!localStorage.getItem('token');
   }
 
+  // ✅ Logout
   logout(): void {
     this.userRole = null;
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
   }
-
-  private setRole(role: 'student' | 'admin') {
-    this.userRole = role;
-    localStorage.setItem('userRole', role);
-  }
-
-
-  private clearRole() {
-    this.userRole = null;
-    localStorage.removeItem('userRole');
-  }
-
 }

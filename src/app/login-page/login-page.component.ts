@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-page',
@@ -12,55 +13,79 @@ export class LoginPageComponent {
   loginForm: FormGroup;
   isAnimating = false;
 
+  toast = {
+    message: '',
+    type: 'success' as 'success' | 'error',
+    visible: false
+  };
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
-    // Initialize reactive form
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
-  // Getter for email control
   get email() {
     return this.loginForm.get('email');
   }
 
-  // Getter for password control
   get password() {
     return this.loginForm.get('password');
   }
 
-  // Login function with animation and routing
+  showToast(message: string, type: 'success' | 'error') {
+    this.toast.message = message;
+    this.toast.type = type;
+    this.toast.visible = true;
+    setTimeout(() => (this.toast.visible = false), 3000);
+  }
+
   onLogin(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched(); // show all errors
+      this.loginForm.markAllAsTouched();
       return;
     }
 
     const { email, password } = this.loginForm.value;
 
-    const loginSuccess = this.authService.login(email, password);
+    this.authService.login(email, password).subscribe({
+      next: (res) => {
+        this.showToast('✅ Login successful!', 'success');
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
 
-    if (loginSuccess) {
-      this.isAnimating = true;
+        this.isAnimating = true;
 
-      // Delay navigation to allow animation to finish
-      setTimeout(() => {
-        const role = this.authService.getRole();
+        setTimeout(() => {
+          const role = res.role;
+          if (role === 'admin') {
+            this.router.navigate(['/dashboard/found']);
+          } else {
+            this.router.navigate(['/dashboard/lost']);
+          }
+        }, 600);
+      },
+      error: (err: HttpErrorResponse) => {
+        let errorMsg = '❌ Login failed. Please try again.';
 
-        if (role === 'admin') {
-          this.router.navigate(['/dashboard/found']);
-        } else {
-          this.router.navigate(['/dashboard/lost']);
+        if (err.status === 0) {
+          errorMsg = '❌ Server unreachable.';
+        } else if (err.status === 401) {
+          errorMsg = '❌ Invalid email or password.';
+        } else if (typeof err.error === 'string') {
+          errorMsg = '❌ ' + err.error;
+        } else if (err.error?.message) {
+          errorMsg = '❌ ' + err.error.message;
         }
-      }, 500); // match with .animate-fade-out-down duration
-    } else {
-      alert('❌ Invalid email or password');
-    }
+
+        this.showToast(errorMsg, 'error');
+      }
+    });
   }
 
   onForgotPassword(): void {

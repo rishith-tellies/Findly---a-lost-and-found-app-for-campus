@@ -11,13 +11,13 @@ interface LostItem {
 @Component({
   selector: 'app-lost-items',
   templateUrl: './lost-items.component.html',
-  styleUrls: ['./lost-items.component.css'] // Optional
+  styleUrls: ['./lost-items.component.css']
 })
 export class LostItemsComponent implements OnInit {
   items: LostItem[] = [];
   searchText: string = '';
   selectedCategory: string = '';
-  isAdmin: boolean = false;
+  isAdmin: boolean = true; // ✅ Hardcoded for now (API role-based later)
 
   constructor(private itemService: ItemService) {}
 
@@ -25,9 +25,6 @@ export class LostItemsComponent implements OnInit {
     this.itemService.getLostItems().subscribe((data: LostItem[]) => {
       this.items = data;
     });
-
-    // Check if the user is admin from localStorage
-    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
   }
 
   filteredItems(): LostItem[] {
@@ -38,13 +35,11 @@ export class LostItemsComponent implements OnInit {
     );
   }
 
-  // ✅ Admin delete function
   deletePost(index: number): void {
     this.items.splice(index, 1);
-    alert('Post deleted by admin.');
+    alert(' Post deleted successfully by admin.');
   }
 
-  // Optional: reset filter
   clearFilters(): void {
     this.searchText = '';
     this.selectedCategory = '';

@@ -1,4 +1,3 @@
-// src/app/dashboard/view-all-posts/view-all-posts.component.ts
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -8,12 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewAllPostsComponent implements OnInit {
   allPosts: any[] = [];
-  isAdmin: boolean = false;
+  isAdmin: boolean = true; // ✅ Hardcoded admin status for now
 
   ngOnInit(): void {
-    // ✅ Check if admin from localStorage
-    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
-
     // Dummy data
     this.allPosts = [
       {
@@ -47,9 +43,8 @@ export class ViewAllPostsComponent implements OnInit {
     ];
   }
 
-  // ✅ Admin-only delete function
   deletePost(index: number): void {
     this.allPosts.splice(index, 1);
-    alert('Post deleted by admin.');
+    alert(' Post deleted successfully.');
   }
 }

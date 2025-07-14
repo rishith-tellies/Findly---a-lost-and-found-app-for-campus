@@ -9,17 +9,12 @@ export class FoundItemsComponent implements OnInit {
   items: any[] = [];
   searchText = '';
   selectedCategory = '';
-  isAdmin: boolean = false;
-  
+  isAdmin: boolean = true; // 🔁 hardcoded for now (remove localStorage)
 
   constructor(private itemService: ItemService) {}
 
   ngOnInit(): void {
-    // Check admin status on load
-    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
-    console.log("Admin mode:", this.isAdmin); // For debugging
-
-    // Load items
+    // ✅ Just fetch items — no localStorage check
     this.itemService.getFoundItems().subscribe(data => {
       this.items = data;
     });
@@ -34,6 +29,6 @@ export class FoundItemsComponent implements OnInit {
 
   deletePost(index: number): void {
     this.items.splice(index, 1);
-    alert('🗑️ Post deleted successfully.');
+    alert(' Post deleted successfully.');
   }
 }

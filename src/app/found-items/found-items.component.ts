@@ -35,6 +35,9 @@ export class FoundItemsComponent implements OnInit {
   filteredItems: FoundItem[] = [];
   searchText = '';
   selectedCategory = '';
+
+  isAdmin: boolean = true; // 🔁 hardcoded for now (remove localStorage)
+
   selectedItem: FoundItem | null = null;
   isLoading = false;
   errorMessage: string | null = null;
@@ -44,9 +47,16 @@ export class FoundItemsComponent implements OnInit {
   claimMessage = '';
   isSendingClaim = false;
 
+
   categories = ['ID Card', 'Electronics', 'Books', 'Mess Card'];
 
   ngOnInit(): void {
+
+    // ✅ Just fetch items — no localStorage check
+    this.itemService.getFoundItems().subscribe(data => {
+      this.items = data;
+    });
+
     this.loadItems();
   }
 
@@ -102,6 +112,7 @@ export class FoundItemsComponent implements OnInit {
         imageUrl: 'https://www.printasia.in/pub/media/catalog/product/m/e/mess_catering_tiffin_food_joint_images_background_psd_designs_5_.jpg'
       }
     ];
+
   }
 
   applyFilters(): void {
@@ -112,6 +123,13 @@ export class FoundItemsComponent implements OnInit {
       (this.selectedCategory === '' || item.category === this.selectedCategory)
     );
   }
+
+
+  deletePost(index: number): void {
+    this.items.splice(index, 1);
+    alert(' Post deleted successfully.');
+  }
+}
 
   onSearchChange(): void {
     this.applyFilters();
@@ -168,3 +186,4 @@ export class FoundItemsComponent implements OnInit {
   event.target.src = 'assets/default-item.jpg';
 }
 }
+

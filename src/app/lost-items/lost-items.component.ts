@@ -15,6 +15,7 @@ interface LostItem {
 @Component({
   selector: 'app-lost-items',
   templateUrl: './lost-items.component.html',
+
   styleUrls: ['./lost-items.component.css'],
   animations: [
     trigger('zoomIn', [
@@ -31,6 +32,10 @@ interface LostItem {
   ]
 })
 export class LostItemsComponent implements OnInit {
+   items: LostItem[] = [];
+  searchText: string = '';
+  selectedCategory: string = '';
+  isAdmin: boolean = true; // ✅ Hardcoded for now (API role-based later)
   items: LostItem[] = [];
   filteredItems: LostItem[] = [];
   searchText = '';
@@ -43,6 +48,7 @@ export class LostItemsComponent implements OnInit {
   showClaimForm = false;
   claimMessage = '';
   isSendingClaim = false;
+
 
   categories = ['ID Card', 'Electronics', 'Books', 'Mess Card'];
 
@@ -113,12 +119,17 @@ export class LostItemsComponent implements OnInit {
     );
   }
 
+
+  deletePost(index: number): void {
+    this.items.splice(index, 1);
+    alert(' Post deleted successfully by admin.')
   onSearchChange(): void {
     this.applyFilters();
   }
 
   onCategoryChange(): void {
     this.applyFilters();
+
   }
 
   clearFilters(): void {

@@ -11,7 +11,10 @@ export class AddItemComponent implements OnInit {
   itemName = '';
   description = '';
   location = '';
+  category = '';
   imageUrl: string | null = null;
+
+  categories: string[] = ['Electronics', 'Books', 'Cards', 'Others'];
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
@@ -32,17 +35,16 @@ export class AddItemComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.itemName || !this.description || !this.location || !this.imageUrl) return;
-  
+    if (!this.itemName || !this.description || !this.location || !this.category || !this.imageUrl) return;
+
     Swal.fire({
       icon: 'success',
       title: `${this.type === 'lost' ? 'Lost' : 'Found'} item submitted successfully!`,
       showConfirmButton: false,
       timer: 1500
     }).then(() => {
-      // ✅ FIXED PATH — match your actual routes
       const targetRoute = this.type === 'lost' ? 'lost' : 'found';
       this.router.navigate(['/dashboard', targetRoute]);
     });
-  }  
+  }
 }

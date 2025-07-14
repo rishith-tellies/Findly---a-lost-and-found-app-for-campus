@@ -20,25 +20,24 @@ interface LostItem {
     trigger('zoomIn', [
       transition(':enter', [
         style({ transform: 'scale(0.5)', opacity: 0 }),
-        animate('300ms ease-out', 
-          style({ transform: 'scale(1)', opacity: 1 }))
+        animate('300ms ease-out', style({ transform: 'scale(1)', opacity: 1 }))
       ]),
       transition(':leave', [
-        animate('200ms ease-in', 
-          style({ transform: 'scale(0.5)', opacity: 0 }))
+        animate('200ms ease-in', style({ transform: 'scale(0.5)', opacity: 0 }))
       ])
     ])
   ]
 })
 export class LostItemsComponent implements OnInit {
   items: LostItem[] = [];
+  searchText: string = '';
+  selectedCategory: string = '';
+  isAdmin: boolean = true; // Hardcoded for now
   filteredItems: LostItem[] = [];
-  searchText = '';
-  selectedCategory = '';
   selectedItem: LostItem | null = null;
   isLoading = false;
   errorMessage: string | null = null;
-  
+
   // Claim functionality
   showClaimForm = false;
   claimMessage = '';
@@ -56,7 +55,7 @@ export class LostItemsComponent implements OnInit {
       this.items = this.getSampleData();
       this.applyFilters();
       this.isLoading = false;
-    }, 1000); // Simulate loading delay
+    }, 1000);
   }
 
   private getSampleData(): LostItem[] {
@@ -108,7 +107,7 @@ export class LostItemsComponent implements OnInit {
     const searchLower = this.searchText.toLowerCase();
     this.filteredItems = this.items.filter(item =>
       (item.name.toLowerCase().includes(searchLower) ||
-      item.description.toLowerCase().includes(searchLower)) &&
+        item.description.toLowerCase().includes(searchLower)) &&
       (this.selectedCategory === '' || item.category === this.selectedCategory)
     );
   }
@@ -146,18 +145,25 @@ export class LostItemsComponent implements OnInit {
     }
 
     this.isSendingClaim = true;
-    
-    // Simulate API call
+
     setTimeout(() => {
       console.log('Claim submitted for:', this.selectedItem?.name);
       console.log('Message:', this.claimMessage);
       console.log('Would send to:', this.selectedItem?.contact);
-      
+
       this.isSendingClaim = false;
       this.showClaimForm = false;
       this.claimMessage = '';
       alert('Claim request submitted successfully!');
     }, 1500);
+  }
+
+  deletePost(index: number): void {
+    if (confirm('Are you sure you want to delete this post?')) {
+      this.items.splice(index, 1);
+      this.applyFilters();
+      alert('Post deleted successfully by admin.');
+    }
   }
 
   @HostListener('document:keydown.escape', ['$event'])

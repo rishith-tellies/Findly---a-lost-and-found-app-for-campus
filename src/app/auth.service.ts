@@ -9,40 +9,88 @@ interface LoginResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:8888/api/auth';
+
+  private apiUrl = 'http://172.21.11.35:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
+  private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;
+
   constructor(private http: HttpClient) {
-    const storedRole = localStorage.getItem('role') as 'student' | 'admin' | null;
-    this.userRole = storedRole;
+    this.loadUserFromStorage();
+  }
+
+  // ✅ Load user from localStorage on app start
+  private loadUserFromStorage() {
+    const email = localStorage.getItem('email');
+    const role = localStorage.getItem('userRole') as 'student' | 'admin' | null;
+    const name = localStorage.getItem('userName');
+
+    if (email && role && name) {
+      this.currentUser = { email, role, name };
+      this.userRole = role;
+    }
+  }
+
+  private setUser(email: string, role: 'student' | 'admin', name: string) {
+    this.currentUser = { email, role, name };
+    this.userRole = role;
+
+    localStorage.setItem('email', email);
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('userName', name);
+  }
+
+  private clearUser() {
+    this.currentUser = null;
+    this.userRole = null;
+
+    localStorage.removeItem('email');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
   }
 
   // ✅ Call backend to login
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap((res) => {
-        // Store token and role
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         this.userRole = res.role;
+        // For now, set dummy user info — later replace with real values
+        this.setUser(email, res.role, 'User');
       })
     );
   }
 
-  // ✅ Get role
-  getRole(): 'student' | 'admin' | null {
-    return this.userRole;
-  }
-
-  // ✅ Check if token exists
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
-  }
-
-  // ✅ Logout
   logout(): void {
-    this.userRole = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    this.clearUser();
+  }
+
+  getUser() {
+    return this.currentUser;
+  }
+
+  getRole(): 'student' | 'admin' | null {
+    return this.currentUser?.role || null;
+  }
+
+  isAuthenticated(): boolean {
+    const email = localStorage.getItem('email');
+    const role = localStorage.getItem('userRole');
+    const name = localStorage.getItem('userName');
+
+    if (email && role && name) {
+      this.currentUser = { email, role: role as 'student' | 'admin', name };
+      this.userRole = role as 'student' | 'admin';
+      return true;
+    }
+
+    return false;
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser?.role === 'admin';
   }
 }

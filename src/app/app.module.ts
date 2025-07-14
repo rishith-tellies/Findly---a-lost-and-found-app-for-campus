@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { AppRoutingModule } from './app-routing.module'; // ✅ Must come after declarations
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -10,11 +14,8 @@ import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-// ✅ Import routing module that contains all route definitions
-import { AppRoutingModule } from './app-routing.module';
 import { AddItemComponent } from './add-item/add-item.component';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +28,15 @@ import { AddItemComponent } from './add-item/add-item.component';
     RegistrationComponent,
     InterfaceComponent,
     ForgotPasswordComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    BrowserAnimationsModule // ✅ Only this is needed for routing
+    BrowserAnimationsModule,
+    AppRoutingModule  // ✅ Keep this at the bottom of imports if possible
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-// ✅ Import all components (no need to import AppRoutingModule here)
 import { AddItemComponent } from './add-item/add-item.component';
+import { ResetComponent } from './reset/reset.component';
 import { InterfaceComponent } from './interface/interface.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationComponent } from './registration/registration.component';
@@ -16,6 +15,7 @@ const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset', component: ResetComponent }, // ✅ Added reset route
   { path: 'add-item/:type', component: AddItemComponent },
   {
     path: 'dashboard',
@@ -26,7 +26,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'found', pathMatch: 'full' }
     ]
   },
-  { path: '**', redirectTo: '' } // Wildcard route to redirect unknown paths
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

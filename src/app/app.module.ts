@@ -10,7 +10,8 @@ import { LayoutComponent } from './layout/layout.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { InterfaceComponent } from './interface/interface.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 // ✅ Import routing module that contains all route definitions
 import { AppRoutingModule } from './app-routing.module';
 import { AddItemComponent } from './add-item/add-item.component';
@@ -31,7 +32,9 @@ import { AddItemComponent } from './add-item/add-item.component';
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule // ✅ Only this is needed for routing
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule // ✅ Only this is needed for routing
   ],
   providers: [],
   bootstrap: [AppComponent]

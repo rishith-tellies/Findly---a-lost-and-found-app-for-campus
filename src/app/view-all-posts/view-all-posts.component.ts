@@ -8,8 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewAllPostsComponent implements OnInit {
   allPosts: any[] = [];
+  isAdmin: boolean = false;
 
   ngOnInit(): void {
+    // ✅ Check if admin from localStorage
+    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+    // Dummy data
     this.allPosts = [
       {
         type: 'Found',
@@ -40,5 +45,11 @@ export class ViewAllPostsComponent implements OnInit {
         imageUrl: 'https://via.placeholder.com/300x200?text=Notebook'
       }
     ];
+  }
+
+  // ✅ Admin-only delete function
+  deletePost(index: number): void {
+    this.allPosts.splice(index, 1);
+    alert('Post deleted by admin.');
   }
 }

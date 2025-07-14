@@ -12,7 +12,7 @@ import { LostItemsComponent } from './lost-items/lost-items.component';
 import { MyPostsComponent } from './dashboard/my-posts/my-posts.component';
 import { ViewAllPostsComponent } from './view-all-posts/view-all-posts.component';
 import { ProfileComponent } from './profile/profile.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component'; // ✅ Import your new admin component
+import { AdminPageComponent } from './admin-page/admin-page.component'; // ✅ Import your new admin component
 
 const routes: Routes = [
   // Public routes
@@ -42,10 +42,10 @@ const routes: Routes = [
     path: 'admin',
     component: LayoutComponent,
     children: [
-      { path: 'found', component: AdminDashboardComponent },
-      { path: 'lost', component: AdminDashboardComponent },
-      { path: 'my-posts', component: AdminDashboardComponent },
-      { path: 'view-all', component: AdminDashboardComponent },
+      { path: 'found', component: AdminPageComponent },
+      { path: 'lost', component: AdminPageComponent },
+      { path: 'my-posts', component: AdminPageComponent },
+      { path: 'view-all', component: AdminPageComponent },
       { path: '', redirectTo: 'view-all', pathMatch: 'full' }
     ]
   },

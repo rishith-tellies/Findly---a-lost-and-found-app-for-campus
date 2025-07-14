@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  selector: 'app-admin-page',
+  templateUrl: './admin-page.component.html',
+  styleUrls: ['./admin-page.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminPageComponent implements OnInit {
   allPosts: any[] = [];
 
   ngOnInit(): void {
-    // Dummy data
-    this.allPosts = [
-      { type: 'Found', title: 'Phone', location: 'Library', category: 'Electronics' },
-      { type: 'Lost', title: 'Wallet', location: 'Canteen', category: 'Accessories' }
-    ];
+    const posts = localStorage.getItem('allPosts');
+    this.allPosts = posts ? JSON.parse(posts) : [];
   }
 
   deletePost(index: number): void {
-    this.allPosts.splice(index, 1);
-    alert('Post deleted by admin.');
+    const confirmDelete = confirm('Are you sure you want to delete this post?');
+    if (confirmDelete) {
+      this.allPosts.splice(index, 1);
+      alert('Post deleted by admin.');
+      localStorage.setItem('allPosts', JSON.stringify(this.allPosts));
+    }
   }
 }

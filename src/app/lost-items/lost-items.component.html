@@ -27,7 +27,7 @@
   <!-- Lost Items Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <div
-      *ngFor="let item of filteredItems()"
+      *ngFor="let item of filteredItems(); let i = index"
       class="bg-[#1f1f1f] border border-red-600 rounded-lg shadow-lg"
     >
       <img [src]="item.imageUrl" class="w-full h-40 object-cover rounded-t-lg" alt="Lost Item" />
@@ -37,6 +37,13 @@
         <span class="text-xs mt-2 inline-block bg-red-700 px-3 py-1 rounded-full">
           #{{ item.category }}
         </span>
+
+        <!-- ✅ Admin Delete Button -->
+        <button *ngIf="isAdmin"
+                (click)="deletePost(i)"
+                class="mt-3 w-full bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-lg text-sm">
+          🗑 Delete
+        </button>
       </div>
     </div>
   </div>

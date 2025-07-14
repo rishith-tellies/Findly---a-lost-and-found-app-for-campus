@@ -3,8 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CommonModule } from '@angular/common'
+import { RouterModule } from '@angular/router'; // ✅ For router-outlet
 
-// Import all your components
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -32,14 +33,15 @@ import { AdminPageComponent } from './admin-page/admin-page.component';
     MyPostsComponent,
     ProfileComponent,
     InterfaceComponent,
-    AdminDashboardComponent,
     AdminPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,              // ✅ Required for ngModel
-    ReactiveFormsModule       // ✅ Required for formGroup
+    ReactiveFormsModule,
+    CommonModule,
+    RouterModule       // ✅ Required for formGroup
   ],
   providers: [],
   bootstrap: [AppComponent]

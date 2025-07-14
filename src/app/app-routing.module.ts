@@ -7,7 +7,6 @@ import { InterfaceComponent } from './interface/interface.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { AddItemComponent } from './add-item/add-item.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';

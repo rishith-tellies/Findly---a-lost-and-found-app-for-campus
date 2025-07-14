@@ -12,8 +12,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-// ✅ Import routing module that contains all route definitions
-import { AppRoutingModule } from './app-routing.module';
+
 
 import { AddItemComponent } from './add-item/add-item.component';
 import { LayoutComponent } from './layout/layout.component';

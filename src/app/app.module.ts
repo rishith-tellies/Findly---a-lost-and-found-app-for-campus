@@ -9,6 +9,12 @@ import { RouterModule } from '@angular/router'; // ✅ For router-outlet
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+// ✅ Import routing module that contains all route definitions
+import { AppRoutingModule } from './app-routing.module';
+
 import { AddItemComponent } from './add-item/add-item.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
@@ -40,8 +46,12 @@ import { AdminPageComponent } from './admin-page/admin-page.component';
     AppRoutingModule,
     FormsModule,              // ✅ Required for ngModel
     ReactiveFormsModule,
-    CommonModule,
-    RouterModule       // ✅ Required for formGroup
+
+    FormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule // ✅ Only this is needed for routing
+
   ],
   providers: [],
   bootstrap: [AppComponent]

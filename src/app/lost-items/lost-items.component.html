@@ -38,7 +38,7 @@
   <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <div
 
-      *ngFor="let item of filteredItems"
+    *ngFor="let item of filteredItems; let i = index"
       (click)="showItemDetail(item)"
       class="bg-[#1f1f1f] border border-red-600 rounded-lg shadow-lg hover:border-red-400 transition-colors cursor-pointer"
 
@@ -65,10 +65,7 @@
           </button>
         </div>
         
-      </div>
-    </div>
-  </div>
-</div>
+   
 
         <h3 class="text-lg font-bold text-red-400 truncate">{{ item.name }}</h3>
         <p class="text-sm text-gray-300 line-clamp-2">{{ item.description }}</p>

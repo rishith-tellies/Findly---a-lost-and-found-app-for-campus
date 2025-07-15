@@ -31,7 +31,7 @@ export class FoundItemsComponent implements OnInit {
 
   categories: string[] = ['ID Card', 'Electronics', 'Books', 'Clothing', 'Other'];
 
-  // ✅ Inject HttpClient
+  // ✅ Inject HttpClientersfvfd
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {

@@ -10,7 +10,7 @@ interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8888/api/auth';
+  private apiUrl = 'http://172.21.11.36:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
   private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;

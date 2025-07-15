@@ -44,7 +44,6 @@
         [src]="item.imageUrl" 
         class="w-full h-40 object-cover rounded-t-lg"
         alt="{{ item.name }}"
-        onerror="this.src='assets/default-item.jpg'"
       />
       <div class="p-4">
         <h3 class="text-lg font-bold text-red-400 truncate">{{ item.name }}</h3>
@@ -53,10 +52,12 @@
           <span class="text-xs inline-block bg-red-700 px-3 py-1 rounded-full">
             #{{ item.category }}
           </span>
+
+          <!-- ✅ Delete button only for admin -->
           <button *ngIf="isAdmin"
                   (click)="deletePost(i); $event.stopPropagation();"
                   class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md">
-             Delete
+            Delete
           </button>
         </div>
       </div>
@@ -96,7 +97,6 @@
             [src]="selectedItem.imageUrl" 
             alt="{{ selectedItem.name }}"
             class="w-full h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
-            onerror="this.src='assets/default-item.jpg'"
           />
         </div>
 
@@ -157,7 +157,7 @@
                   [disabled]="isSendingClaim"
                   class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors disabled:opacity-50"
                 >
-                  {{ isSendingClaim ? 'Sending...' : 'Send Claim' }}
+                  {{ isSendingClaim ? 'Sending...' : 'Send Message' }}
                 </button>
                 <button
                   (click)="showClaimForm = false"
@@ -174,4 +174,3 @@
     </div>
   </div>
 </div>
- 

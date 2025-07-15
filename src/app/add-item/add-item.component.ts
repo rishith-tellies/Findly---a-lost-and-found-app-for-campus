@@ -3,23 +3,48 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
+const API_BASE_URL = 'http://localhost:8888/api/items';
+
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+}
+
+interface NewItemResponse {
+  _id: string;
+  title: string;
+  description: string;
+  status: 'lost' | 'found';
+  category: number;
+  location?: string;
+  imageUrl?: string;
+  photoData?: string;
+  createdAt: string;
+}
+
 @Component({
   selector: 'app-add-item',
-  templateUrl: './add-item.component.html'
+  templateUrl: './add-item.component.html',
+  styleUrls: ['./add-item.component.css']
 })
 export class AddItemComponent implements OnInit {
   type: 'lost' | 'found' = 'found';
   isLoading = false;
+  loadingCategories = false;
+  categoryError = '';
+  showBase64 = false;
 
   // Form fields
   title = '';
   description = '';
   location = '';
-  category = '';
+  categoryId: number | null = null;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  base64Image: string | null = null;
 
-  categories: string[] = ['Electronics', 'Books', 'Cards', 'Others'];
+  categories: Category[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +54,38 @@ export class AddItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.type = this.route.snapshot.paramMap.get('type') === 'lost' ? 'lost' : 'found';
+    this.loadCategories();
+  }
+
+  loadCategories(): void {
+    this.loadingCategories = true;
+    this.categoryError = '';
+    
+    this.http.get<Category[]>(`${API_BASE_URL}/categories`).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.loadingCategories = false;
+      },
+      error: (error) => {
+        console.error('Failed to load categories', error);
+        this.loadingCategories = false;
+        this.categoryError = 'Failed to load categories. Please try again.';
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Category Error',
+          text: this.categoryError,
+          confirmButtonColor: '#d33',
+          showCancelButton: true,
+          cancelButtonText: 'Dismiss',
+          confirmButtonText: 'Retry'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.loadCategories();
+          }
+        });
+      }
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -37,38 +94,27 @@ export class AddItemComponent implements OnInit {
     
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.match(/image\/(jpeg|png|jpg)/)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid File Type',
-        text: 'Please upload a JPEG, JPG, or PNG image',
-        confirmButtonColor: '#d33'
-      });
-      input.value = ''; // Clear the file input
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      Swal.fire({
-        icon: 'error',
-        title: 'File Too Large',
-        text: 'Maximum file size is 5MB',
-        confirmButtonColor: '#d33'
-      });
-      input.value = ''; // Clear the file input
-      return;
-    }
-
     this.selectedFile = file;
     
-    // Create preview
+    // Create preview and convert to Base64
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = (e) => {
       this.imagePreview = reader.result as string;
+      this.base64Image = this.imagePreview.split(',')[1]; // Extract Base64 part
     };
     reader.readAsDataURL(file);
+  }
+
+  clearImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.base64Image = null;
+    const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  }
+
+  toggleBase64(): void {
+    this.showBase64 = !this.showBase64;
   }
 
   onSubmit(): void {
@@ -83,28 +129,38 @@ export class AddItemComponent implements OnInit {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('title', this.title);
-    formData.append('description', this.description);
-    formData.append('location', this.location);
-    formData.append('category', this.category);
-    formData.append('status', this.type);
-    
-    if (this.selectedFile) {
-      formData.append('file', this.selectedFile, this.selectedFile.name);
-    }
+    // Prepare the request body with Base64 data
+    const requestBody = {
+      title: this.title,
+      description: this.description,
+      status: this.type,
+      category: this.categoryId,
+      location: this.location,
+      photoData: this.base64Image
+    };
 
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-      // Let browser set Content-Type with boundary
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
-    this.http.post('http://localhost:8888/api/items', formData, { headers })
+    this.http.post<NewItemResponse>(`${API_BASE_URL}/items`, requestBody, { headers })
       .subscribe({
-        next: () => this.handleSuccess(),
+        next: (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            html: `Item submitted successfully!<br><small>ID: ${response._id}</small>`,
+            showConfirmButton: false,
+            timer: 2000
+          }).then(() => {
+            this.resetForm();
+            this.router.navigate(['/dashboard', this.type]);
+          });
+        },
         error: (error) => {
-          console.error('API Error:', error);
-          this.handleError(error);
+          this.isLoading = false;
+          this.handleApiError(error);
         }
       });
   }
@@ -112,11 +168,12 @@ export class AddItemComponent implements OnInit {
   private validateForm(): boolean {
     const errors = [];
     
-    if (!this.title) errors.push('Title is required');
-    if (!this.description) errors.push('Description is required');
-    if (!this.location) errors.push('Location is required');
-    if (!this.category) errors.push('Category is required');
-    if (!this.selectedFile) errors.push('Image is required');
+    if (!this.title?.trim()) errors.push('Title is required');
+    if (!this.description?.trim()) errors.push('Description is required');
+    if (!this.location?.trim()) errors.push('Location is required');
+    if (!this.categoryId) errors.push('Category is required');
+    // Removed image validation
+    // if (!this.base64Image) errors.push('Image is required');
 
     if (errors.length > 0) {
       Swal.fire({
@@ -130,41 +187,39 @@ export class AddItemComponent implements OnInit {
     return true;
   }
 
-  private handleSuccess(): void {
-    this.isLoading = false;
-    Swal.fire({
-      icon: 'success',
-      title: 'Success!',
-      text: `Item marked as ${this.type} has been submitted`,
-      showConfirmButton: false,
-      timer: 1500
-    }).then(() => {
-      this.router.navigate(['/dashboard', this.type]);
-    });
-  }
-
-  private handleError(error: any): void {
-    this.isLoading = false;
-    
+  private handleApiError(error: any): void {
     let errorMessage = 'An error occurred while submitting the item';
     
-    if (error.status === 0) {
-      errorMessage = 'Unable to connect to server. Please check your connection.';
+    if (error.status === 400) {
+      errorMessage = error.error?.message || 'Missing or invalid fields';
     } else if (error.status === 401) {
-      errorMessage = 'Your session has expired. Please log in again.';
+      errorMessage = 'Please log in to submit items';
       this.router.navigate(['/login']);
-    } else if (error.error?.message) {
-      errorMessage = error.error.message;
-    } else if (error.message) {
-      errorMessage = error.message;
+    } else if (error.status === 0) {
+      errorMessage = 'Unable to connect to server. Please check your connection.';
+    } else if (error.error?.details) {
+      errorMessage += `<br><small>${error.error.details}</small>`;
     }
 
     Swal.fire({
       icon: 'error',
       title: 'Submission Failed',
-      text: errorMessage,
+      html: errorMessage,
       confirmButtonColor: '#d33'
     });
+  }
+
+  private resetForm(): void {
+    this.title = '';
+    this.description = '';
+    this.location = '';
+    this.categoryId = null;
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.base64Image = null;
+    this.showBase64 = false;
+    const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   }
 
   private showAuthError(): void {

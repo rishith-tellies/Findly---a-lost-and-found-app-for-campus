@@ -11,6 +11,9 @@
       Add {{ type === 'lost' ? 'Lost' : 'Found' }} Item
     </h2>
 
+    <!-- Hidden status field -->
+    <input type="hidden" [(ngModel)]="type" />
+
     <!-- Item Title -->
     <div class="mb-4">
       <label class="block text-sm font-medium text-gray-300 mb-1">
@@ -62,21 +65,21 @@
         Category <span class="text-red-400">*</span>
       </label>
       <select
-        [(ngModel)]="category"
+        [(ngModel)]="categoryId"
         name="category"
         required
         class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2"
         [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
       >
         <option value="" disabled selected>Select category</option>
-        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
       </select>
     </div>
 
-    <!-- File Upload -->
+    <!-- File Upload (Now Optional) -->
     <div class="mb-4">
       <label class="block text-sm font-medium text-gray-300 mb-1">
-        Upload Image <span class="text-red-400">*</span>
+        Upload Image (Optional)
       </label>
       <input
         type="file"
@@ -84,7 +87,6 @@
         (change)="onFileSelected($event)"
         accept="image/*"
         hidden
-        required
       />
       <label
         for="fileUpload"
@@ -96,7 +98,6 @@
       <span class="ml-2 text-sm text-gray-400" *ngIf="selectedFile">
         {{ selectedFile.name }}
       </span>
-      <p class="mt-1 text-xs text-gray-400">Max 5MB (JPEG, PNG, JPG, WEBP)</p>
     </div>
 
     <!-- Image Preview -->
@@ -106,12 +107,45 @@
         class="w-full h-48 object-cover rounded shadow-md border border-gray-700"
         alt="Uploaded preview"
       />
+      <div class="mt-2 flex justify-between items-center">
+        <span class="text-xs text-gray-400">Image preview</span>
+        <button 
+          (click)="clearImage()"
+          class="text-xs text-red-400 hover:text-red-300"
+        >
+          Remove Image
+        </button>
+      </div>
     </div>
 
-    <!-- Submit -->
+    <!-- Base64 Data (for debugging) -->
+    <div *ngIf="showBase64 && base64Image" class="mb-4 p-2 bg-gray-800 rounded text-xs overflow-hidden">
+      <div class="flex justify-between items-center mb-1">
+        <span class="text-gray-400">Base64 Preview (first 100 chars):</span>
+        <button 
+          (click)="toggleBase64()"
+          class="text-xs text-gray-400 hover:text-gray-300"
+        >
+          Hide
+        </button>
+      </div>
+      <div class="text-gray-300 truncate">{{ base64Image.substring(0, 100) }}...</div>
+    </div>
+
+    <!-- Toggle Base64 Visibility -->
+    <div *ngIf="!showBase64 && base64Image" class="mb-4">
+      <button 
+        (click)="toggleBase64()"
+        class="text-xs text-gray-400 hover:text-gray-300"
+      >
+        Show Base64 Data
+      </button>
+    </div>
+
+    <!-- Submit Button -->
     <button
       (click)="onSubmit()"
-      [disabled]="isLoading || !title || !description || !location || !category || !selectedFile"
+      [disabled]="isLoading || !title || !description || !location || !categoryId"
       class="w-full py-2 px-4 rounded font-semibold shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
       [ngClass]="type === 'lost' ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'"
     >

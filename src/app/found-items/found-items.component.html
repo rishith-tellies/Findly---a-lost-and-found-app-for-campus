@@ -42,11 +42,11 @@
       <img 
         [src]="item.imageUrl" 
         class="w-full h-40 object-cover rounded-t-lg"
-        alt="{{ item.name }}"
+        alt="{{ item.title }}"
         (error)="handleImageError($event)"
       />
       <div class="p-4">
-        <h3 class="text-lg font-bold text-emerald-400 truncate">{{ item.name }}</h3>
+        <h3 class="text-lg font-bold text-emerald-400 truncate">{{ item.title }}</h3>
         <p class="text-sm text-gray-300 line-clamp-2">{{ item.description }}</p>
         <div class="mt-3 flex justify-between items-center">
           <span class="text-xs inline-block bg-emerald-700 px-3 py-1 rounded-full">{{ item.category }}</span>
@@ -91,7 +91,7 @@
         <div class="relative h-64 md:h-full bg-gray-800">
           <img 
             [src]="selectedItem.imageUrl || 'assets/default-item.jpg'" 
-            alt="{{ selectedItem.name }}"
+            alt="{{ selectedItem.title }}"
             class="w-full h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
             (error)="handleImageError($event)"
           />
@@ -100,7 +100,7 @@
         <!-- Details -->
         <div class="p-6 space-y-4">
           <div class="flex justify-between items-start">
-            <h2 class="text-2xl font-bold text-emerald-400">{{ selectedItem.name }}</h2>
+            <h2 class="text-2xl font-bold text-emerald-400">{{ selectedItem.title }}</h2>
             <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-900">
               {{ selectedItem.category }}
             </span>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Location } from '@angular/common';
@@ -11,31 +12,48 @@ export class ProfileComponent implements OnInit {
   email: string = '';
   role: string = '';
   name: string = '';
+  isLoading = true;
+  errorMessage = '';
 
   constructor(
-    private authService: AuthService,
+    private http: HttpClient,
     private router: Router,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.getUser?.();
-    if (!user) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    this.email = user.email;
-    this.role = user.role;
-    this.name = user.name;
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    this.http.get<{ email: string; role: string; name: string }>('http://172.21.11.36:8888/api/me', { headers })
+      .subscribe({
+        next: (user) => {
+          this.name = user.name;
+          this.email = user.email;
+          this.role = user.role;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = 'Failed to load profile';
+          this.isLoading = false;
+          console.error(err);
+        }
+      });
   }
 
   logout() {
-    this.authService.logout();
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 
   goBack() {
-    this.location.back(); // ✅ Navigates to the previous page
+    this.location.back();
   }
 }

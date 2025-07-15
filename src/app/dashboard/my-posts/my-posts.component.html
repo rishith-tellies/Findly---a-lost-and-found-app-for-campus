@@ -1,58 +1,70 @@
 <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2">
-      📋 My Uploaded Posts
-    </h2>
-  
-    <!-- No Posts Message -->
-    <div *ngIf="userPosts.length === 0" class="text-center text-gray-400 bg-gray-800 p-6 rounded-xl border border-gray-600">
-      You haven’t uploaded any posts yet.
-    </div>
-  
-    <!-- Posts Grid -->
-    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-      <div *ngFor="let post of userPosts; let i = index" 
-           class="bg-gray-800 p-5 rounded-xl border border-emerald-700/50 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
-        <div>
-          <h3 class="text-xl font-semibold text-white mb-1">{{ post.title }}</h3>
-          <p class="text-sm text-gray-400 mb-2">
-            Type: 
-            <span [ngClass]="{
-              'text-green-400': post.type === 'Found',
-              'text-red-400': post.type === 'Lost'
-            }">
-              {{ post.type }}
-            </span>
-          </p>
-          <p class="text-sm text-gray-300 italic mb-4">
-            {{ post.description || 'No description provided.' }}
-          </p>
-        </div>
-  
-        <!-- Button aligned right -->
-        <div class="flex justify-end">
-          <button (click)="confirmDelete(i)"
-                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md transition duration-300">
-             Delete
-          </button>
-        </div>
+  <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2">
+    📋 My Uploaded Posts
+  </h2>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center text-gray-400 py-6">
+    <div class="animate-spin h-6 w-6 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto"></div>
+    <p class="mt-2">Loading your posts...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!isLoading && errorMessage" class="text-center text-red-500 py-4">
+    {{ errorMessage }}
+  </div>
+
+  <!-- No Posts Message -->
+  <div *ngIf="!isLoading && !errorMessage && userPosts.length === 0" 
+       class="text-center text-gray-400 bg-gray-800 p-6 rounded-xl border border-gray-600">
+    You haven’t uploaded any posts yet.
+  </div>
+
+  <!-- Posts Grid -->
+  <div *ngIf="!isLoading && !errorMessage && userPosts.length > 0"
+       class="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+    <div *ngFor="let post of userPosts; let i = index" 
+         class="bg-gray-800 p-5 rounded-xl border border-emerald-700/50 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-1">{{ post.title }}</h3>
+        <p class="text-sm text-gray-400 mb-2">
+          Type: 
+          <span [ngClass]="{
+            'text-green-400': post.type === 'Found',
+            'text-red-400': post.type === 'Lost'
+          }">
+            {{ post.type }}
+          </span>
+        </p>
+        <p class="text-sm text-gray-300 italic mb-4">
+          {{ post.description || 'No description provided.' }}
+        </p>
       </div>
-    </div>
-  
-    <!-- Delete Confirmation Modal -->
-    <div *ngIf="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 w-80 text-center shadow-xl">
-        <h3 class="text-lg font-bold text-white mb-4">Are you sure you want to delete this post?</h3>
-        <div class="flex justify-center gap-4">
-          <button (click)="deletePost()"
-                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
-            Yes
-          </button>
-          <button (click)="cancelDelete()"
-                  class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md">
-            No
-          </button>
-        </div>
+
+      <!-- Button aligned right -->
+      <div class="flex justify-end">
+        <button (click)="confirmDelete(i)"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md transition duration-300">
+           Delete
+        </button>
       </div>
     </div>
   </div>
-  
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 w-80 text-center shadow-xl">
+      <h3 class="text-lg font-bold text-white mb-4">Are you sure you want to delete this post?</h3>
+      <div class="flex justify-center gap-4">
+        <button (click)="deletePost()"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
+          Yes
+        </button>
+        <button (click)="cancelDelete()"
+                class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md">
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

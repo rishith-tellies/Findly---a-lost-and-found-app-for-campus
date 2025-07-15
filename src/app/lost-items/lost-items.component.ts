@@ -30,20 +30,23 @@ interface LostItem {
 })
 export class LostItemsComponent implements OnInit {
   items: LostItem[] = [];
+  filteredItems: LostItem[] = [];
   searchText: string = '';
   selectedCategory: string = '';
-  isAdmin: boolean = true; // Hardcoded for now
-  filteredItems: LostItem[] = [];
-  selectedItem: LostItem | null = null;
+  categories = ['ID Card', 'Electronics', 'Books', 'Mess Card'];
+
   isLoading = false;
   errorMessage: string | null = null;
+  selectedItem: LostItem | null = null;
+
+  // Simulate logged-in user
+  isAdmin: boolean = true; // true for admin, false for student
+  currentUserEmail: string = 'john.doe@college.edu'; // Logged-in user's email
 
   // Claim functionality
   showClaimForm = false;
   claimMessage = '';
   isSendingClaim = false;
-
-  categories = ['ID Card', 'Electronics', 'Books', 'Mess Card'];
 
   ngOnInit(): void {
     this.loadItems();
@@ -162,7 +165,7 @@ export class LostItemsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this post?')) {
       this.items.splice(index, 1);
       this.applyFilters();
-      alert('Post deleted successfully by admin.');
+      alert('Post deleted successfully.');
     }
   }
 

@@ -38,8 +38,7 @@ const routes: Routes = [
     ]
   },
 
-  { path: '**', redirectTo: '' }
-
+  
 
   {
     path: 'admin',

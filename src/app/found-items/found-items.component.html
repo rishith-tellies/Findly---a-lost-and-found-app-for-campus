@@ -35,7 +35,7 @@
   <!-- Items Grid -->
   <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <div
-    *ngFor="let item of filteredItemsList; let i = index"
+      *ngFor="let item of filteredItemsList; let i = index"
       (click)="showItemDetail(item)"
       class="bg-[#1f1f1f] border border-emerald-600 rounded-lg shadow-lg hover:border-emerald-400 transition-colors cursor-pointer"
     >
@@ -43,7 +43,7 @@
         [src]="item.imageUrl" 
         class="w-full h-40 object-cover rounded-t-lg"
         alt="{{ item.name }}"
-        onerror="this.src='assets/default-item.jpg'"
+        (error)="handleImageError($event)"
       />
       <div class="p-4">
         <h3 class="text-lg font-bold text-emerald-400 truncate">{{ item.name }}</h3>
@@ -63,7 +63,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="filteredItems.length === 0 && !isLoading && !errorMessage" class="text-center py-12">
+  <div *ngIf="filteredItemsList.length === 0 && !isLoading && !errorMessage" class="text-center py-12">
     <div class="text-gray-400 text-lg">No found items matching your search</div>
     <button 
       (click)="clearFilters()" 
@@ -73,7 +73,7 @@
     </button>
   </div>
 
-  <!-- Detail Modal -->
+  <!-- Modal -->
   <div *ngIf="selectedItem" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
     <div 
       @zoomIn
@@ -125,7 +125,7 @@
             </div>
           </div>
 
-          <!-- Claim -->
+          <!-- Claim Form -->
           <div class="mt-4 space-y-3">
             <button 
               *ngIf="!showClaimForm"

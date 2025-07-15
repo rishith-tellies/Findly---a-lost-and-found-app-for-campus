@@ -1,83 +1,128 @@
 <div class="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 py-10 sm:py-16">
-    <div
-      class="p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md border"
-      [ngClass]="type === 'lost' ? 'border-red-500 bg-[#1f1f1f]' : 'border-emerald-600 bg-[#1f1f1f]'"
+  <div
+    class="p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md border"
+    [ngClass]="type === 'lost' ? 'border-red-500 bg-[#1f1f1f]' : 'border-emerald-600 bg-[#1f1f1f]'"
+  >
+    <!-- Title -->
+    <h2
+      class="text-2xl sm:text-3xl font-bold mb-6 text-center"
+      [ngClass]="type === 'lost' ? 'text-red-400' : 'text-emerald-400'"
     >
-      <h2
-        class="text-2xl sm:text-3xl font-bold mb-6 text-center"
-        [ngClass]="type === 'lost' ? 'text-red-400' : 'text-emerald-400'"
+      Add {{ type === 'lost' ? 'Lost' : 'Found' }} Item
+    </h2>
+
+    <!-- Item Title -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-300 mb-1">
+        Item Title <span class="text-red-400">*</span>
+      </label>
+      <input
+        [(ngModel)]="title"
+        type="text"
+        required
+        placeholder="e.g. ID card, headphones..."
+        class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
+        [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
+      />
+    </div>
+
+    <!-- Description -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-300 mb-1">
+        Description <span class="text-red-400">*</span>
+      </label>
+      <textarea
+        [(ngModel)]="description"
+        rows="3"
+        required
+        placeholder="Brief description of the item..."
+        class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
+        [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
+      ></textarea>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-300 mb-1">
+        Location <span class="text-red-400">*</span>
+      </label>
+      <input
+        [(ngModel)]="location"
+        type="text"
+        required
+        placeholder="Where it was lost or found"
+        class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
+        [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
+      />
+    </div>
+
+    <!-- Category Dropdown -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-300 mb-1">
+        Category <span class="text-red-400">*</span>
+      </label>
+      <select
+        [(ngModel)]="category"
+        name="category"
+        required
+        class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2"
+        [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
       >
-        Add {{ type === 'lost' ? 'Lost' : 'Found' }} Item
-      </h2>
-  
-      <!-- Item Name -->
-      <div class="mb-4">
-        <label class="block text-sm mb-1">Item Name</label>
-        <input
-          [(ngModel)]="itemName"
-          required
-          class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
-          [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
-        />
-      </div>
-  
-      <!-- Description -->
-      <div class="mb-4">
-        <label class="block text-sm mb-1">Description</label>
-        <textarea
-          [(ngModel)]="description"
-          rows="3"
-          required
-          class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
-          [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
-        ></textarea>
-      </div>
-  
-      <!-- Location -->
-      <div class="mb-4">
-        <label class="block text-sm mb-1">Location</label>
-        <input
-          [(ngModel)]="location"
-          required
-          class="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none"
-          [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
-        />
-      </div>
-  
-      <!-- File Upload -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Upload Image</label>
-        <input
-          type="file"
-          id="fileUpload"
-          (change)="onFileSelected($event)"
-          accept="image/*"
-          hidden
-          required
-        />
-        <label
-          for="fileUpload"
-          class="inline-block text-white font-semibold py-2 px-4 rounded cursor-pointer"
-          [ngClass]="type === 'lost' ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'"
-        >
-          Choose File
-        </label>
-      </div>
-  
-      <!-- Preview -->
-      <div *ngIf="imageUrl" class="mb-4">
-        <img [src]="imageUrl" class="w-full h-48 object-cover rounded" />
-      </div>
-  
-      <!-- Submit -->
-      <button
-        (click)="onSubmit()"
-        [disabled]="!itemName || !description || !location || !imageUrl"
-        class="w-full py-2 px-4 rounded font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        <option value="" disabled selected>Select category</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <!-- File Upload -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-300 mb-1">
+        Upload Image <span class="text-red-400">*</span>
+      </label>
+      <input
+        type="file"
+        id="fileUpload"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        hidden
+        required
+      />
+      <label
+        for="fileUpload"
+        class="inline-block text-white font-semibold py-2 px-4 rounded cursor-pointer"
         [ngClass]="type === 'lost' ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'"
       >
-        Submit
-      </button>
+        Choose File
+      </label>
+      <span class="ml-2 text-sm text-gray-400" *ngIf="selectedFile">
+        {{ selectedFile.name }}
+      </span>
+      <p class="mt-1 text-xs text-gray-400">Max 5MB (JPEG, PNG, JPG, WEBP)</p>
     </div>
+
+    <!-- Image Preview -->
+    <div *ngIf="imagePreview" class="mb-4">
+      <img
+        [src]="imagePreview"
+        class="w-full h-48 object-cover rounded shadow-md border border-gray-700"
+        alt="Uploaded preview"
+      />
+    </div>
+
+    <!-- Submit -->
+    <button
+      (click)="onSubmit()"
+      [disabled]="isLoading || !title || !description || !location || !category || !selectedFile"
+      class="w-full py-2 px-4 rounded font-semibold shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+      [ngClass]="type === 'lost' ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'"
+    >
+      <span *ngIf="!isLoading">Submit</span>
+      <span *ngIf="isLoading" class="flex items-center">
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Processing...
+      </span>
+    </button>
   </div>
-  
+</div>

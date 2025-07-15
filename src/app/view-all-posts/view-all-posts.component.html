@@ -1,0 +1,129 @@
+<!-- src/app/view-all-posts/view-all-posts.component.html -->
+<div class="min-h-screen bg-gray-900 text-white p-6">
+  <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2 mb-6">🌍 All Uploaded Posts</h2>
+
+  <!-- Filter & Search -->
+  <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+    <input
+      [(ngModel)]="searchText"
+      (input)="applyFilters()"
+      type="text"
+      placeholder="Search posts..."
+      class="px-4 py-2 w-full md:w-1/2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+    />
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="applyFilters()"
+      class="px-4 py-2 w-full md:w-1/4 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+    >
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+  </div>
+
+  <!-- No Posts -->
+  <div *ngIf="filteredPosts.length === 0" class="text-center text-gray-400 bg-gray-800 p-6 rounded-xl border border-gray-600">
+    No posts available.
+  </div>
+
+  <!-- Posts Grid -->
+  <div *ngIf="filteredPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div
+      *ngFor="let post of filteredPosts; let i = index"
+      (click)="showPostDetail(post)"
+      class="bg-gray-900 p-4 rounded-xl border shadow hover:shadow-xl cursor-pointer transition-all duration-300"
+      [ngClass]="{
+        'border-green-500': post.type === 'Found',
+        'border-red-500': post.type === 'Lost'
+      }"
+    >
+      <img [src]="post.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'" alt="{{ post.title }}"
+           class="rounded-lg w-full h-48 object-cover mb-4 border border-gray-700" />
+
+      <h3 class="text-lg font-bold mb-1 truncate">{{ post.title }}</h3>
+      <p class="text-sm text-gray-300 mb-1 truncate">📍 {{ post.location }}</p>
+      <p class="text-sm font-semibold mb-2"
+         [ngClass]="{
+           'text-green-400': post.type === 'Found',
+           'text-red-400': post.type === 'Lost'
+         }">{{ post.type }}</p>
+
+      <div class="flex items-center justify-between mt-2">
+        <span class="inline-block text-xs px-2 py-1 bg-emerald-700/30 rounded text-emerald-200 truncate">
+          #{{ post.category }}
+        </span>
+
+        <button *ngIf="isAdmin"
+                (click)="deletePost(i); $event.stopPropagation();"
+                class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div *ngIf="selectedPost" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+    <div
+      @zoomIn
+      class="bg-[#1f1f1f] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-emerald-600 shadow-2xl relative"
+    >
+      <button
+        (click)="closePostDetail()"
+        class="absolute top-4 right-4 text-white hover:text-emerald-400 text-2xl z-10"
+      >
+        &times;
+      </button>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <img
+          [src]="selectedPost.imageUrl || 'https://via.placeholder.com/400x300?text=Image'"
+          alt="{{ selectedPost.title }}"
+          class="w-full h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
+        />
+
+        <div class="p-6 space-y-4">
+          <h2 class="text-2xl font-bold text-emerald-400">{{ selectedPost.title }}</h2>
+          <p class="text-sm text-gray-400">📍 Location: <span class="text-white">{{ selectedPost.location }}</span></p>
+          <p class="text-sm text-gray-400">🏷️ Category: <span class="text-white">{{ selectedPost.category }}</span></p>
+          <p class="text-sm text-gray-400">🗂️ Type:
+            <span [ngClass]="{
+              'text-green-400': selectedPost.type === 'Found',
+              'text-red-400': selectedPost.type === 'Lost'
+            }">{{ selectedPost.type }}</span>
+          </p>
+
+          <div *ngIf="!isAdmin && !showClaimForm" class="pt-2">
+            <button
+              (click)="showClaimForm = true"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+              Claim This Item
+            </button>
+          </div>
+
+          <div *ngIf="showClaimForm" class="space-y-2">
+            <textarea
+              [(ngModel)]="claimMessage"
+              placeholder="Enter your claim message"
+              class="w-full px-4 py-2 rounded bg-gray-800 text-white"
+              rows="3"
+            ></textarea>
+
+            <div class="flex gap-2">
+              <button
+                (click)="sendClaimRequest()"
+                class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg">
+                Send Claim
+              </button>
+              <button
+                (click)="showClaimForm = false"
+                class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

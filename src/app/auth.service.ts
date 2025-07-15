@@ -1,56 +1,102 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+
+interface LoginResponse {
+  token: string;
+  role: 'student' | 'admin';
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  private apiUrl = 'http://172.21.11.36:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
-  constructor() {
-    const storedRole = localStorage.getItem('userRole') as 'student' | 'admin' | null;
-    this.userRole = storedRole;
+  private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;
+
+  constructor(private http: HttpClient) {
+    this.loadUserFromStorage();
   }
 
-  login(email: string, password: string): boolean {
-    const lowerEmail = email.toLowerCase();
-    const domain = '@kristujayanti.com';
+  private loadUserFromStorage() {
+    const email = localStorage.getItem('userEmail');
+    const role = localStorage.getItem('userRole') as 'student' | 'admin' | null;
+    const name = localStorage.getItem('userName');
 
-    const isStudent = /^[0-9]{2}[a-z]{3,4}[0-9]{2}@kristujayanti\.com$/.test(lowerEmail);
-    const isKristuEmail = lowerEmail.endsWith(domain);
-
-    if (isStudent && password === 'student123') {
-      this.userRole = 'student';
-      return true;
+    if (email && role && name) {
+      this.currentUser = { email, role, name };
+      this.userRole = role;
     }
+  }
 
-    if (!isStudent && isKristuEmail && password === 'admin123') {
-      this.userRole = 'admin';
-      return true;
-    }
+  private setUser(email: string, role: 'student' | 'admin', name: string) {
+    this.currentUser = { email, role, name };
+    this.userRole = role;
 
+    localStorage.setItem('userEmail', email);
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('userName', name);
+  }
+
+  private clearUser() {
+    this.currentUser = null;
     this.userRole = null;
-    return false;
+
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
   }
 
-  getRole(): 'student' | 'admin' | null {
-    return this.userRole;
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap((res) => {
+        localStorage.setItem('authToken', res.token);
+        localStorage.setItem('userRole', res.role);
+        this.setUser(email, res.role, 'User'); // Replace with real name after /me call if needed
+      })
+    );
   }
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('userRole');
+  // ✅ NEW: Fetch user profile from backend (/api/me)
+  getProfile(): Observable<{ email: string; role: 'student' | 'admin'; name: string }> {
+    return this.http.get<{ email: string; role: 'student' | 'admin'; name: string }>(
+      'http://172.21.11.36:8888/api/me'
+    ).pipe(
+      tap((user) => {
+        this.setUser(user.email, user.role, user.name);
+      })
+    );
   }
 
   logout(): void {
-    this.userRole = null;
+    this.clearUser();
   }
 
-  private setRole(role: 'student' | 'admin') {
-    this.userRole = role;
-    localStorage.setItem('userRole', role);
+  getUser() {
+    return this.currentUser;
   }
 
-
-  private clearRole() {
-    this.userRole = null;
-    localStorage.removeItem('userRole');
+  getRole(): 'student' | 'admin' | null {
+    return this.currentUser?.role || null;
   }
 
+  isAuthenticated(): boolean {
+    const email = localStorage.getItem('userEmail');
+    const role = localStorage.getItem('userRole');
+    const name = localStorage.getItem('userName');
+
+    if (email && role && name) {
+      this.currentUser = { email, role: role as 'student' | 'admin', name };
+      this.userRole = role as 'student' | 'admin';
+      return true;
+    }
+
+    return false;
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser?.role === 'admin';
+  }
 }

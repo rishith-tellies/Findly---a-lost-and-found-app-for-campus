@@ -1,37 +1,50 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { RegistrationComponent } from './registration/registration.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { AddItemComponent } from './add-item/add-item.component';
+import { ResetComponent } from './reset/reset.component';
+import { LayoutComponent } from './layout/layout.component';
 import { FoundItemsComponent } from './found-items/found-items.component';
 import { LostItemsComponent } from './lost-items/lost-items.component';
-import { LayoutComponent } from './layout/layout.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { ViewAllPostsComponent } from './view-all-posts/view-all-posts.component';
+import { MyPostsComponent } from './dashboard/my-posts/my-posts.component';
+import { ProfileComponent } from './profile/profile.component';
 import { InterfaceComponent } from './interface/interface.component';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-
-// ✅ Import routing module that contains all route definitions
-import { AppRoutingModule } from './app-routing.module';
-import { AddItemComponent } from './add-item/add-item.component';
+import { AdminPageComponent } from './admin-page/admin-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AddItemComponent,
     LoginPageComponent,
+    RegistrationComponent,
+    ForgotPasswordComponent,
+    AddItemComponent,
+    ResetComponent,
+    LayoutComponent,
     FoundItemsComponent,
     LostItemsComponent,
-    LayoutComponent,
-    RegistrationComponent,
+    ViewAllPostsComponent,
+    MyPostsComponent,
+    ProfileComponent,
     InterfaceComponent,
-    ForgotPasswordComponent,
+    AdminPageComponent, // ✅ Move here from imports
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule // ✅ Only this is needed for routing
+    ReactiveFormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AppRoutingModule // ✅ Keep this at the end
   ],
   providers: [],
   bootstrap: [AppComponent]

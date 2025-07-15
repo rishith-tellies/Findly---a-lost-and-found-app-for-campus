@@ -1,44 +1,72 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ItemService {
-  private foundItems: any[] = [
-    {
-      name: 'iPhone 14',
-      description: 'Found near library',
-      category: 'Electronics',
-      imageUrl: 'https://via.placeholder.com/300x200?text=iPhone'
-    },
-    {
-      name: 'ID Card',
-      description: 'Found in mess',
-      category: 'Cards',
-      imageUrl: 'https://via.placeholder.com/300x200?text=ID+Card'
-    }
-  ];
+  private apiUrl = 'http://localhost:8888/api/items'; // Your backend API endpoint
 
-  private lostItems: any[] = [
-    {
-      name: 'Laptop',
-      description: 'Lost in lecture hall',
-      category: 'Electronics',
-      imageUrl: 'https://via.placeholder.com/300x200?text=Laptop'
-    },
-    {
-      name: 'Mess Card',
-      description: 'Lost in canteen',
-      category: 'Cards',
-      imageUrl: 'https://via.placeholder.com/300x200?text=Mess+Card'
-    }
-  ];
+  constructor(private http: HttpClient) { }
 
-  getFoundItems(): Observable<any[]> {
-    return of(this.foundItems);
+  // Get all items (lost or found)
+  getItems(type: 'lost' | 'found'): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?status=${type}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 
-  getLostItems(): Observable<any[]> {
-    return of(this.lostItems);
+  // Create new item (with file upload)
+  createItem(itemData: {
+    title: string;
+    description: string;
+    location: string;
+    category: string;
+    status: 'lost' | 'found';
+    file?: File;
+  }): Observable<any> {
+    const formData = new FormData();
+    formData.append('title', itemData.title);
+    formData.append('description', itemData.description);
+    formData.append('location', itemData.location);
+    formData.append('category', itemData.category);
+    formData.append('status', itemData.status);
+    
+    if (itemData.file) {
+      formData.append('file', itemData.file);
+    }
+
+    return this.http.post(this.apiUrl, formData, {
+      headers: this.getAuthHeaders(false) // false = don't set Content-Type
+    });
+  }
+
+  // Get items posted by current user
+  getMyItems(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/mine`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Delete an item
+  deleteItem(itemId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${itemId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Helper method to get authorization headers
+  private getAuthHeaders(includeContentType: boolean = true): HttpHeaders {
+    const token = localStorage.getItem('authToken');
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${token}`
+    };
+
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    return new HttpHeaders(headers);
   }
 }

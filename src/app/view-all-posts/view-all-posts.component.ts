@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 interface Post {
@@ -33,48 +34,34 @@ export class ViewAllPostsComponent implements OnInit {
   searchText: string = '';
   selectedCategory: string = '';
   categories: string[] = [];
+  showClaimForm = false;
+  claimMessage = '';
+  isLoading = false;
+  errorMessage = '';
 
-  // Claim-related
-  showClaimForm: boolean = false;
-  claimMessage: string = '';
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     const role = localStorage.getItem('userRole');
     this.isAdmin = role === 'admin';
 
-    this.allPosts = [
-      {
-        type: 'Found',
-        title: 'Phone',
-        location: 'Library',
-        category: 'Electronics',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Phone'
-      },
-      {
-        type: 'Lost',
-        title: 'Wallet',
-        location: 'Canteen',
-        category: 'Accessories',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Wallet'
-      },
-      {
-        type: 'Found',
-        title: 'ID Card',
-        location: 'Reception',
-        category: 'Cards',
-        imageUrl: 'https://via.placeholder.com/300x200?text=ID+Card'
-      },
-      {
-        type: 'Lost',
-        title: 'Notebook',
-        location: 'Classroom',
-        category: 'Stationery',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Notebook'
-      }
-    ];
+    this.fetchPosts();
+  }
 
-    this.categories = [...new Set(this.allPosts.map(p => p.category))];
-    this.applyFilters();
+  fetchPosts(): void {
+    this.isLoading = true;
+    this.http.get<Post[]>('http://172.21.11.36:8888/api/items').subscribe({
+      next: (data) => {
+        this.allPosts = data;
+        this.categories = [...new Set(data.map(p => p.category))];
+        this.applyFilters();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = '⚠️ Failed to fetch posts.';
+        this.isLoading = false;
+      }
+    });
   }
 
   applyFilters(): void {

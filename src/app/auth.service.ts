@@ -10,7 +10,7 @@ interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8888/api/auth';
+  private apiUrl = 'http://172.21.11.36:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
   private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;
@@ -19,7 +19,6 @@ export class AuthService {
     this.loadUserFromStorage();
   }
 
-  // ✅ Load user from localStorage when app starts
   private loadUserFromStorage() {
     const email = localStorage.getItem('userEmail');
     const role = localStorage.getItem('userRole') as 'student' | 'admin' | null;
@@ -31,7 +30,6 @@ export class AuthService {
     }
   }
 
-  // ✅ Save user data
   private setUser(email: string, role: 'student' | 'admin', name: string) {
     this.currentUser = { email, role, name };
     this.userRole = role;
@@ -41,7 +39,6 @@ export class AuthService {
     localStorage.setItem('userName', name);
   }
 
-  // ✅ Clear user on logout
   private clearUser() {
     this.currentUser = null;
     this.userRole = null;
@@ -52,33 +49,39 @@ export class AuthService {
     localStorage.removeItem('userName');
   }
 
-  // ✅ Login API call
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap((res) => {
         localStorage.setItem('authToken', res.token);
         localStorage.setItem('userRole', res.role);
-        this.setUser(email, res.role, 'User'); // Replace 'User' with real name from backend if needed
+        this.setUser(email, res.role, 'User'); // Replace with real name after /me call if needed
       })
     );
   }
 
-  // ✅ Logout
+  // ✅ NEW: Fetch user profile from backend (/api/me)
+  getProfile(): Observable<{ email: string; role: 'student' | 'admin'; name: string }> {
+    return this.http.get<{ email: string; role: 'student' | 'admin'; name: string }>(
+      'http://172.21.11.36:8888/api/me'
+    ).pipe(
+      tap((user) => {
+        this.setUser(user.email, user.role, user.name);
+      })
+    );
+  }
+
   logout(): void {
     this.clearUser();
   }
 
-  // ✅ Get current user object
   getUser() {
     return this.currentUser;
   }
 
-  // ✅ Get user role
   getRole(): 'student' | 'admin' | null {
     return this.currentUser?.role || null;
   }
 
-  // ✅ Check if user is logged in
   isAuthenticated(): boolean {
     const email = localStorage.getItem('userEmail');
     const role = localStorage.getItem('userRole');
@@ -93,7 +96,6 @@ export class AuthService {
     return false;
   }
 
-  // ✅ Check if user is admin
   isAdmin(): boolean {
     return this.currentUser?.role === 'admin';
   }

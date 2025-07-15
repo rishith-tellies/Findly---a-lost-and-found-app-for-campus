@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { HttpClient } from '@angular/common/http'; // ✅ Add this
 
 interface LostItem {
   id: number;
-  name: string;
+  title: string;
   category: string;
   description: string;
   location: string;
@@ -33,83 +34,50 @@ export class LostItemsComponent implements OnInit {
   filteredItems: LostItem[] = [];
   searchText: string = '';
   selectedCategory: string = '';
-  categories = ['ID Card', 'Electronics', 'Books', 'Mess Card'];
+  categories: string[] = [];
 
   isLoading = false;
   errorMessage: string | null = null;
   selectedItem: LostItem | null = null;
 
-  // Simulate logged-in user
-  isAdmin: boolean = true; // true for admin, false for student
-  currentUserEmail: string = 'john.doe@college.edu'; // Logged-in user's email
+  isAdmin: boolean = false;
+  currentUserEmail: string = '';
 
-  // Claim functionality
   showClaimForm = false;
   claimMessage = '';
   isSendingClaim = false;
 
+  constructor(private http: HttpClient) {} // ✅ Inject HttpClient
+
   ngOnInit(): void {
     this.loadItems();
+    const role = localStorage.getItem('userRole');
+    this.isAdmin = role === 'admin';
+    this.currentUserEmail = localStorage.getItem('userEmail') || '';
   }
 
   loadItems(): void {
     this.isLoading = true;
-    setTimeout(() => {
-      this.items = this.getSampleData();
-      this.applyFilters();
-      this.isLoading = false;
-    }, 1000);
-  }
+    this.errorMessage = null;
 
-  private getSampleData(): LostItem[] {
-    return [
-      {
-        id: 1,
-        name: 'Student ID Card',
-        category: 'ID Card',
-        description: 'Lost near the library, has photo and 2023 batch details',
-        location: 'Library entrance',
-        date: '2023-05-15',
-        contact: 'john.doe@college.edu',
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTioKTYh4Rt-jdwsOfaTQb_BMAHqY-TVNLLVg&s'
+    this.http.get<LostItem[]>('http://172.21.11.36:8888/api/items?status=lost').subscribe({
+      next: (data) => {
+        this.items = data;
+        this.filteredItems = data;
+        this.categories = [...new Set(data.map(item => item.category))]; // Get unique categories
+        this.isLoading = false;
       },
-      {
-        id: 2,
-        name: 'Wireless Earbuds',
-        category: 'Electronics',
-        description: 'Black wireless earbuds in a charging case',
-        location: 'Computer lab',
-        date: '2023-06-20',
-        contact: 'sarah.smith@college.edu',
-        imageUrl: 'https://images-cdn.ubuy.co.in/67d6979fc38f365f8c3f8352-wireless-earbuds-bluetooth-5-3-built-in.jpg'
-      },
-      {
-        id: 3,
-        name: 'Physics Textbook',
-        category: 'Books',
-        description: 'University Physics 15th edition with handwritten notes',
-        location: 'Lecture Hall A',
-        date: '2023-06-18',
-        contact: 'mike.johnson@college.edu',
-        imageUrl: 'https://www.vivadigital.in/vupload/books/book_160419153403_73.jpg'
-      },
-      {
-        id: 4,
-        name: 'Library Card',
-        category: 'ID Card',
-        description: 'College library card with barcode sticker',
-        location: 'Library study area',
-        date: '2023-06-22',
-        contact: 'alex.wilson@college.edu',
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxTWTMLoQwfJmNV1m6bqBjX7z4gUbMf8LZtQ&s'
+      error: (err) => {
+        this.errorMessage = '⚠️ Failed to load lost items.';
+        this.isLoading = false;
       }
-    ];
+    });
   }
 
   applyFilters(): void {
     const searchLower = this.searchText.toLowerCase();
     this.filteredItems = this.items.filter(item =>
-      (item.name.toLowerCase().includes(searchLower) ||
+      (item.title.toLowerCase().includes(searchLower) ||
         item.description.toLowerCase().includes(searchLower)) &&
       (this.selectedCategory === '' || item.category === this.selectedCategory)
     );
@@ -150,7 +118,7 @@ export class LostItemsComponent implements OnInit {
     this.isSendingClaim = true;
 
     setTimeout(() => {
-      console.log('Claim submitted for:', this.selectedItem?.name);
+      console.log('Claim submitted for:', this.selectedItem?.title);
       console.log('Message:', this.claimMessage);
       console.log('Would send to:', this.selectedItem?.contact);
 

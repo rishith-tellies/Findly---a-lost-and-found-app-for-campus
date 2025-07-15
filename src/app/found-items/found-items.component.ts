@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';  // ✅ Add this
 
 interface FoundItem {
-  name: string;
+  title: string;
   description: string;
   category: string;
   location: string;
@@ -13,7 +14,6 @@ interface FoundItem {
 @Component({
   selector: 'app-found-items',
   templateUrl: './found-items.component.html',
-  
 })
 export class FoundItemsComponent implements OnInit {
   foundItems: FoundItem[] = [];
@@ -31,51 +31,32 @@ export class FoundItemsComponent implements OnInit {
 
   categories: string[] = ['ID Card', 'Electronics', 'Books', 'Clothing', 'Other'];
 
+  // ✅ Inject HttpClient
+  constructor(private http: HttpClient) {}
+
   ngOnInit(): void {
     this.fetchFoundItems();
     const role = localStorage.getItem('userRole');
     this.isAdmin = role === 'admin';
   }
 
+  // ✅ Fetch from real API
   fetchFoundItems(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
-    // Simulated data fetch
-    setTimeout(() => {
-      try {
-        this.foundItems = [
-          {
-            name: 'Black Wallet',
-            description: 'Found near cafeteria. Contains college ID.',
-            category: 'Other',
-            location: 'Cafeteria',
-            date: '2025-07-10',
-            contact: 'john@example.com',
-            imageUrl: 'assets/wallet.jpg'
-          },
-          {
-            name: 'Headphones',
-            description: 'Wireless headphones found near library.',
-            category: 'Electronics',
-            location: 'Library',
-            date: '2025-07-12',
-            contact: 'sara@example.com',
-            imageUrl: 'assets/headphones.jpg'
-          }
-        ];
 
-        this.filteredItemsList = this.foundItems;
+    this.http.get<FoundItem[]>('http://172.21.11.36:8888/api/items?status=found').subscribe({
+      next: (data) => {
+        this.foundItems = data;
+        this.filteredItemsList = data;
+        this.categories = [...new Set(data.map(item => item.category))]; // Unique categories
         this.isLoading = false;
-      } catch (error) {
-        this.errorMessage = 'Failed to load found items.';
+      },
+      error: (err) => {
+        this.errorMessage = '⚠️ Failed to load found items.';
         this.isLoading = false;
       }
-    }, 1000);
-  }
-
-  filteredItems(): FoundItem[] {
-    return this.filteredItemsList;
+    });
   }
 
   onSearchChange(): void {
@@ -91,7 +72,7 @@ export class FoundItemsComponent implements OnInit {
     const category = this.selectedCategory;
 
     this.filteredItemsList = this.foundItems.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
+      const matchesSearch = item.title.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
       const matchesCategory = category ? item.category === category : true;
       return matchesSearch && matchesCategory;
     });

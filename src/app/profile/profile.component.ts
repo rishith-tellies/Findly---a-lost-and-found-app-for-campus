@@ -32,7 +32,7 @@ export class ProfileComponent implements OnInit {
       Authorization: `Bearer ${token}`
     });
 
-    this.http.get<{ email: string; role: string; name: string }>('http://172.21.11.36:8888/api/me', { headers })
+    this.http.get<{ email: string; role: string; name: string }>('http://localhost:8888/api/me', { headers })
       .subscribe({
         next: (user) => {
           this.name = user.name;

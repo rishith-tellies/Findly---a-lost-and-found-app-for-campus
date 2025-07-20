@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { HttpClient } from '@angular/common/http'; // ✅ Add this
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 interface LostItem {
-  id: number;
+  _id?: string;
+  id?: string;
   title: string;
   category: string;
   description: string;
@@ -11,6 +12,7 @@ interface LostItem {
   date: Date | string;
   contact?: string;
   imageUrl: string;
+  isClaimed?: boolean;
 }
 
 @Component({
@@ -32,42 +34,43 @@ interface LostItem {
 export class LostItemsComponent implements OnInit {
   items: LostItem[] = [];
   filteredItems: LostItem[] = [];
-  searchText: string = '';
-  selectedCategory: string = '';
+  searchText = '';
+  selectedCategory = '';
   categories: string[] = [];
 
   isLoading = false;
   errorMessage: string | null = null;
   selectedItem: LostItem | null = null;
 
-  isAdmin: boolean = false;
-  currentUserEmail: string = '';
-
+  isAdmin = false;
+  currentUserEmail = '';
   showClaimForm = false;
   claimMessage = '';
   isSendingClaim = false;
 
-  constructor(private http: HttpClient) {} // ✅ Inject HttpClient
+  // Toast
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
+  showToast = false;
+
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadItems();
-    const role = localStorage.getItem('userRole');
-    this.isAdmin = role === 'admin';
+    this.isAdmin = localStorage.getItem('userRole') === 'admin';
     this.currentUserEmail = localStorage.getItem('userEmail') || '';
   }
 
   loadItems(): void {
     this.isLoading = true;
-    this.errorMessage = null;
-
-    this.http.get<LostItem[]>('http://172.21.11.36:8888/api/items?status=lost').subscribe({
+    this.http.get<LostItem[]>('http://localhost:8888/api/items?status=lost').subscribe({
       next: (data) => {
         this.items = data;
         this.filteredItems = data;
-        this.categories = [...new Set(data.map(item => item.category))]; // Get unique categories
+        this.categories = [...new Set(data.map(item => item.category))];
         this.isLoading = false;
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = '⚠️ Failed to load lost items.';
         this.isLoading = false;
       }
@@ -78,7 +81,7 @@ export class LostItemsComponent implements OnInit {
     const searchLower = this.searchText.toLowerCase();
     this.filteredItems = this.items.filter(item =>
       (item.title.toLowerCase().includes(searchLower) ||
-        item.description.toLowerCase().includes(searchLower)) &&
+       item.description.toLowerCase().includes(searchLower)) &&
       (this.selectedCategory === '' || item.category === this.selectedCategory)
     );
   }
@@ -110,35 +113,95 @@ export class LostItemsComponent implements OnInit {
   }
 
   sendClaimRequest(): void {
-    if (!this.claimMessage.trim()) {
-      alert('Please enter a claim message.');
+    if (!this.claimMessage.trim() || !this.selectedItem) {
+      this.showToastMessage('Please enter a claim message.', 'error');
+      return;
+    }
+
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      this.showToastMessage('You must be logged in to claim this item.', 'error');
       return;
     }
 
     this.isSendingClaim = true;
+    const itemId = this.selectedItem._id || this.selectedItem.id;
+    const headers = {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    };
 
-    setTimeout(() => {
-      console.log('Claim submitted for:', this.selectedItem?.title);
-      console.log('Message:', this.claimMessage);
-      console.log('Would send to:', this.selectedItem?.contact);
+    const contactUrl = `http://localhost:8888/api/items/${itemId}/contact`;
+    const claimUrl = `http://localhost:8888/api/items/${itemId}/claim`;
 
-      this.isSendingClaim = false;
-      this.showClaimForm = false;
-      this.claimMessage = '';
-      alert('Claim request submitted successfully!');
-    }, 1500);
+    this.http.post(contactUrl, { message: this.claimMessage }, headers).subscribe({
+      next: () => {
+       this.http.patch(claimUrl, {}, {
+  headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
+  responseType: 'text'  // 👈 prevent JSON parse error
+}).subscribe({
+  next: () => {
+    this.isSendingClaim = false;
+    this.showClaimForm = false;
+    this.claimMessage = '';
+    this.showToastMessage('🎉 Claim submitted and item marked as claimed!', 'success');
+    if (this.selectedItem) {
+      this.selectedItem.isClaimed = true;
+      this.selectedItem.category = 'CLAIMED ✅';
+    }
+    this.closeDetail();
+  },
+  error: (err) => {
+    this.isSendingClaim = false;
+    const msg = this.extractErrorMessage(err);
+    this.showToastMessage(`❌ Could not mark as claimed: ${msg}`, 'error');
   }
+});
+
+      },
+      error: (err) => {
+        this.isSendingClaim = false;
+        const msg = this.extractErrorMessage(err);
+        this.showToastMessage(`❌ Could not send message: ${msg}`, 'error');
+      }
+    });
+  }
+
+ private extractErrorMessage(err: any): string {
+  if (!err) return 'Unknown error';
+
+  // If it's plain text
+  if (typeof err.error === 'string') return err.error;
+
+  // If backend returns an object with a message
+  if (err.error && typeof err.error === 'object') {
+    if (err.error.message) return err.error.message;
+    if (err.error.error) return err.error.error; // sometimes nested as `error`
+  }
+
+  // Fallback: stringify the whole object
+  return JSON.stringify(err.error || err);
+}
+
 
   deletePost(index: number): void {
     if (confirm('Are you sure you want to delete this post?')) {
       this.items.splice(index, 1);
       this.applyFilters();
-      alert('Post deleted successfully.');
+      this.showToastMessage('✅ Post deleted successfully.', 'success');
     }
   }
 
   @HostListener('document:keydown.escape', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent): void {
+  handleKeyboardEvent(): void {
     this.closeDetail();
+  }
+
+  showToastMessage(message: string, type: 'success' | 'error' = 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
   }
 }

@@ -72,7 +72,7 @@
         [ngClass]="type === 'lost' ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-emerald-500 focus:border-emerald-500'"
       >
         <option value="" disabled selected>Select category</option>
-        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        <option *ngFor="let cat of categories" [value]="cat._id.$oid">{{ cat.name }}</option>
       </select>
     </div>
 
@@ -159,4 +159,17 @@
       </span>
     </button>
   </div>
+</div>
+
+
+<!-- Toast Notification -->
+<div
+  *ngIf="showAlert"
+  class="fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300"
+  [ngClass]="{
+    'bg-green-600 text-white': alertType === 'success',
+    'bg-red-600 text-white': alertType === 'error'
+  }"
+>
+  {{ alertMessage }}
 </div>

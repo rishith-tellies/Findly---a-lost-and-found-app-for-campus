@@ -10,7 +10,7 @@ interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private apiUrl = 'http://172.21.11.36:8888/api/auth';
+  private apiUrl = 'http://localhost:8888/api/auth';
   private userRole: 'student' | 'admin' | null = null;
 
   private currentUser: { email: string; role: 'student' | 'admin'; name: string } | null = null;
@@ -62,7 +62,7 @@ export class AuthService {
   // ✅ NEW: Fetch user profile from backend (/api/me)
   getProfile(): Observable<{ email: string; role: 'student' | 'admin'; name: string }> {
     return this.http.get<{ email: string; role: 'student' | 'admin'; name: string }>(
-      'http://172.21.11.36:8888/api/me'
+      'http://localhost:8888/api/me'
     ).pipe(
       tap((user) => {
         this.setUser(user.email, user.role, user.name);

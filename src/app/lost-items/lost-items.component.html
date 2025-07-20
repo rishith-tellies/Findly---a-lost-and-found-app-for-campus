@@ -44,7 +44,7 @@
         [src]="item.imageUrl" 
         class="w-full h-40 object-cover rounded-t-lg"
         alt="{{ item.title }}"
-        onerror="this.src='assets/default-item.jpg'"
+        
       />
       <div class="p-4">
         <h3 class="text-lg font-bold text-red-400 truncate">{{ item.title }}</h3>
@@ -174,4 +174,15 @@
       </div>
     </div>
   </div>
+</div>
+<!-- Toast Notification -->
+<div
+  *ngIf="showToast"
+  class="fixed bottom-5 right-5 px-4 py-3 rounded-lg text-white shadow-lg z-50 transition duration-300"
+  [ngClass]="{
+    'bg-red-600': toastType === 'error',
+    'bg-emerald-600': toastType === 'success'
+  }"
+>
+  {{ toastMessage }}
 </div>

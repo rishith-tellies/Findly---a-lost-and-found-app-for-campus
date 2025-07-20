@@ -21,7 +21,7 @@ export class MyPostsComponent implements OnInit {
 
   fetchUserPosts(): void {
     this.isLoading = true;
-    this.http.get<any[]>('http://172.21.11.36:8888/api/items/mine').subscribe({
+    this.http.get<any[]>('http://localhost:8888/api/items/mine').subscribe({
       next: (data) => {
         this.userPosts = data;
         this.isLoading = false;

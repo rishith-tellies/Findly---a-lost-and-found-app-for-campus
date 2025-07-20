@@ -57,7 +57,7 @@ export class ViewAllPostsComponent implements OnInit {
 
   fetchPosts(): void {
     this.isLoading = true;
-    this.http.get<Post[]>('http://172.21.11.36:8888/api/items').subscribe({
+    this.http.get<Post[]>('http://localhost:8888/api/items').subscribe({
       next: (data) => {
         this.allPosts = data;
         this.categories = [...new Set(data.map(p => p.category))];

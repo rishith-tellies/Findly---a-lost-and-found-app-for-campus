@@ -1,0 +1,70 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+  <div *ngIf="!isTokenChecked" class="text-center">
+    <p class="text-xl">Verifying reset link...</p>
+  </div>
+
+  <div *ngIf="isTokenChecked && !isValidToken" class="text-center bg-gray-800 p-8 rounded-xl max-w-md w-full">
+    <h2 class="text-2xl font-bold text-red-400 mb-4">Invalid Reset Link</h2>
+    <p class="mb-6">The password reset link is invalid or has expired.</p>
+    <button 
+      (click)="router.navigate(['/forgot-password'])"
+      class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-full transition"
+    >
+      Request New Reset Link
+    </button>
+  </div>
+
+  <form
+    *ngIf="isTokenChecked && isValidToken"
+    [formGroup]="resetForm"
+    (ngSubmit)="onSubmit()"
+    class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-emerald-500"
+  >
+    <h2 class="text-2xl font-bold text-emerald-400 text-center mb-6">Reset Your Password</h2>
+
+    <div class="mb-4">
+      <label class="block mb-1">New Password</label>
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Enter new password (min 6 characters)"
+        class="w-full px-4 py-2 bg-gray-700 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      />
+      <div *ngIf="submitted && resetForm.controls['password'].errors" class="text-red-400 text-sm mt-1">
+        Password must be at least 6 characters
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <label class="block mb-1">Confirm Password</label>
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        placeholder="Re-enter your password"
+        class="w-full px-4 py-2 bg-gray-700 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      />
+      <div *ngIf="submitted && resetForm.hasError('mismatch')" class="text-red-400 text-sm mt-1">
+        Passwords do not match
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-full transition"
+      [disabled]="isLoading"
+    >
+      {{ isLoading ? 'Processing...' : 'Reset Password' }}
+    </button>
+  </form>
+
+  <div
+    *ngIf="toast.visible"
+    class="fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg z-50 transition-all duration-300"
+    [ngClass]="{
+      'bg-emerald-600 text-white': toast.type === 'success',
+      'bg-red-600 text-white': toast.type === 'error'
+    }"
+  >
+    {{ toast.message }}
+  </div>
+</div>

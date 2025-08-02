@@ -1,0 +1,70 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-emerald-800 px-4">
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onLogin()"
+    [ngClass]="{ 'animate-fade-out-down': isAnimating, 'fade-in-down': !isAnimating }"
+    class="bg-gray-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700 transition-all duration-300"
+  >
+    <h2 class="text-3xl font-bold text-emerald-400 text-center mb-6">Sign In to Findly</h2>
+
+    <!-- Email Field -->
+    <label for="email" class="text-sm text-white mb-1 block">Email</label>
+    <input
+      id="email"
+      formControlName="email"
+      type="email"
+      placeholder="you@kristujayanti.com"
+      class="w-full px-4 py-2 mb-2 bg-gray-800 text-white border border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300"
+    />
+    <div *ngIf="email?.invalid && email?.touched" class="text-red-400 text-xs mb-2">
+      Please enter a valid email.
+    </div>
+
+    <!-- Password Field -->
+    <label for="password" class="text-sm text-white mb-1 block">Password</label>
+    <input
+      id="password"
+      formControlName="password"
+      type="password"
+      placeholder="Enter your password"
+      class="w-full px-4 py-2 mb-2 bg-gray-800 text-white border border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300"
+    />
+    <div *ngIf="password?.invalid && password?.touched" class="text-red-400 text-xs mb-2">
+      Password must be at least 6 characters.
+    </div>
+
+    <!-- Login Button -->
+    <button
+      type="submit"
+      [disabled]="loginForm.invalid"
+      class="w-full py-2 bg-emerald-600 text-white font-semibold rounded-full mt-4 hover:bg-emerald-700 transform transition-all duration-300 hover:scale-105 disabled:opacity-50"
+    >
+      Login
+    </button>
+
+    <!-- Forgot Password Link -->
+    <div class="w-full text-sm text-center mt-4">
+      <a routerLink="/forgot-password" class="text-emerald-300 hover:underline transition duration-200">
+        Forgot Password?
+      </a>
+    </div>
+
+    <!-- Create Account Link -->
+    <div class="mt-6 text-center">
+      <span class="text-sm text-gray-400">Don’t have an account?</span>
+      <a routerLink="/register" class="text-sm text-emerald-300 hover:underline ml-1 transition duration-200">
+        Create Account
+      </a>
+    </div>
+  </form>
+  <div
+  *ngIf="toast.visible"
+  class="fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg z-50 transition-all duration-300"
+  [ngClass]="{
+    'bg-emerald-600 text-white': toast.type === 'success',
+    'bg-red-600 text-white': toast.type === 'error'
+  }"
+>
+  {{ toast.message }}
+</div>
+</div>

@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-gray-900 text-white p-6">
+  <h1 class="text-3xl font-bold text-red-400 mb-6 text-center">🎓 College Lost Items</h1>
+
+  <!-- Search & Category Filter -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+    <input
+      [(ngModel)]="searchText"
+      (input)="onSearchChange()"
+      type="text"
+      placeholder="Search lost items..."
+      class="px-4 py-2 w-full md:w-1/2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+    />
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="onCategoryChange()"
+      class="px-4 py-2 w-full md:w-1/4 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+    >
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-400"></div>
+    <p class="mt-2 text-gray-400">Loading lost items...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="text-center py-12 text-red-400">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Lost Items Grid -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div
+      *ngFor="let item of filteredItems; let i = index"
+      (click)="showItemDetail(item)"
+      class="bg-[#1f1f1f] border border-red-600 rounded-lg shadow-lg hover:border-red-400 transition-colors cursor-pointer"
+    >
+      <img 
+        [src]="item.imageUrl" 
+        class="w-full h-40 object-cover rounded-t-lg"
+        alt="{{ item.title }}"
+        
+      />
+      <div class="p-4">
+        <h3 class="text-lg font-bold text-red-400 truncate">{{ item.title }}</h3>
+        <p class="text-sm text-gray-300 line-clamp-2">{{ item.description }}</p>
+        <div class="mt-3 flex justify-between items-center">
+          <span class="text-xs inline-block bg-red-700 px-3 py-1 rounded-full">
+            #{{ item.category }}
+          </span>
+
+          <!-- ✅ Delete button only for admin -->
+          <button *ngIf="isAdmin"
+                  (click)="deletePost(i); $event.stopPropagation();"
+                  class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredItems.length === 0 && !isLoading && !errorMessage" class="text-center py-12">
+    <div class="text-gray-400 text-lg">No lost items matching your search</div>
+    <button 
+      (click)="clearFilters()" 
+      class="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+    >
+      Clear Filters
+    </button>
+  </div>
+
+  <!-- Item Detail Modal -->
+  <div *ngIf="selectedItem" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+    <div 
+      @zoomIn
+      class="bg-[#1f1f1f] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-red-600 shadow-2xl"
+    >
+      <!-- Close Button -->
+      <button 
+        (click)="closeDetail()"
+        class="absolute top-4 right-4 text-white hover:text-red-400 text-2xl z-10"
+      >
+        &times;
+      </button>
+
+      <!-- Item Content -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Image -->
+        <div class="relative h-64 md:h-full">
+          <img 
+            [src]="selectedItem.imageUrl" 
+            alt="{{ selectedItem.title }}"
+            class="w-full h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
+          />
+        </div>
+
+        <!-- Details -->
+        <div class="p-6 space-y-4">
+          <div class="flex justify-between items-start">
+            <h2 class="text-2xl font-bold text-red-400">{{ selectedItem.title }}</h2>
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-900">
+              {{ selectedItem.category }}
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-sm text-gray-400">Description</h3>
+              <p class="text-gray-300">{{ selectedItem.description }}</p>
+            </div>
+
+            <div>
+              <h3 class="text-sm text-gray-400">Location Lost</h3>
+              <p class="text-gray-300">{{ selectedItem.location }}</p>
+            </div>
+
+            <div>
+              <h3 class="text-sm text-gray-400">Date Lost</h3>
+              <p class="text-gray-300">
+                {{ selectedItem.date | date:'mediumDate' }}
+              </p>
+            </div>
+
+            <div *ngIf="selectedItem.contact">
+              <h3 class="text-sm text-gray-400">Contact</h3>
+              <p class="text-gray-300 break-all">{{ selectedItem.contact }}</p>
+            </div>
+          </div>
+
+          <!-- Claim Button & Form -->
+          <div class="mt-4 space-y-3">
+            <button 
+              *ngIf="!showClaimForm"
+              (click)="showClaimForm = true"
+              class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+            >
+              Claim Item
+            </button>
+
+            <div *ngIf="showClaimForm" class="space-y-3">
+              <textarea
+                [(ngModel)]="claimMessage"
+                placeholder="Enter your claim message (e.g., 'I found this item at the location mentioned')"
+                class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows="3"
+              ></textarea>
+              
+              <div class="flex gap-2">
+                <button
+                  (click)="sendClaimRequest()"
+                  [disabled]="isSendingClaim"
+                  class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors disabled:opacity-50"
+                >
+                  {{ isSendingClaim ? 'Sending...' : 'Send Message' }}
+                </button>
+                <button
+                  (click)="showClaimForm = false"
+                  class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Toast Notification -->
+<div
+  *ngIf="showToast"
+  class="fixed bottom-5 right-5 px-4 py-3 rounded-lg text-white shadow-lg z-50 transition duration-300"
+  [ngClass]="{
+    'bg-red-600': toastType === 'error',
+    'bg-emerald-600': toastType === 'success'
+  }"
+>
+  {{ toastMessage }}
+</div>

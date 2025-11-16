@@ -65,7 +65,7 @@ Modern web browser
 
 Installation
 1️⃣ Clone the repository
-git clone https://github.com/your-username/findly.git
+git clone https://github.com/rishith-tellies/Findly---a-lost-and-found-app-for-campus.git
 
 2️⃣ Navigate to project folder
 cd findly

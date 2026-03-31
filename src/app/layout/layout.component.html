@@ -1,0 +1,91 @@
+<div class="h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-emerald-900 text-white font-sans">
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-900/70 backdrop-blur border-b border-emerald-600 shadow-lg flex justify-between items-center px-4 py-3">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-emerald-400 tracking-wide">Findly</h1>
+    <button (click)="toggleSidebar()" class="md:hidden text-emerald-400 text-2xl focus:outline-none">☰</button>
+  </nav>
+
+  <!-- Layout Container -->
+  <div class="flex pt-[64px] h-[calc(100vh-64px)] overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside
+      class="fixed md:relative top-[64px] md:top-0 left-0 w-56 h-[calc(100vh-64px)] md:h-full bg-gray-800/60 backdrop-blur-md border-r border-gray-700 py-6 px-4 shadow-inner z-40 transition-transform duration-300 overflow-hidden"
+      [class.-translate-x-full]="!sidebarOpen"
+      [class.md:translate-x-0]="true">
+      
+      <div class="flex flex-col justify-between h-full">
+        <!-- Sidebar Navigation -->
+        <div class="space-y-4">
+          <button routerLink="/dashboard/view-all" routerLinkActive="bg-yellow-600 text-white"
+                  class="w-full px-4 py-2 rounded-xl bg-gray-900 hover:bg-yellow-700 text-sm font-medium transition-all">
+            🌍 View All Posts
+          </button>
+          <button routerLink="/dashboard/found" routerLinkActive="bg-green-600 text-white"
+                  class="w-full px-4 py-2 rounded-xl bg-gray-900 hover:bg-green-700 text-sm font-medium transition-all">
+            🗃️ Found Items
+          </button>
+          <button routerLink="/dashboard/lost" routerLinkActive="bg-red-600 text-white"
+                  class="w-full px-4 py-2 rounded-xl bg-gray-900 hover:bg-red-700 text-sm font-medium transition-all">
+            🧭 Lost Items
+          </button>
+          <button routerLink="/dashboard/my-posts" routerLinkActive="bg-indigo-600 text-white"
+                  class="w-full px-4 py-2 rounded-xl bg-gray-900 hover:bg-indigo-700 text-sm font-medium transition-all">
+            📝 My Posts
+          </button>
+        </div>
+
+        <!-- Profile + Logout -->
+        <div class="border-t border-gray-700 pt-4 space-y-2">
+          <button routerLink="/profile"
+                  class="w-full px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm flex items-center space-x-2">
+            <span>👤</span><span>Profile</span>
+          </button>
+          <button (click)="confirmLogout()"
+                  class="w-full px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm flex items-center space-x-2">
+            <span>🚪</span><span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div *ngIf="sidebarOpen" (click)="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-30 md:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto ml-0">
+      <div class="bg-gray-900/60 backdrop-blur-lg rounded-2xl shadow-xl p-4 md:p-6 min-h-screen border border-emerald-700/30">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating + Button -->
+  <button
+    (click)="toggleOptions()"
+    class="fixed bottom-6 right-6 bg-emerald-500 hover:bg-emerald-600 text-white text-3xl font-bold rounded-xl w-14 h-14 flex items-center justify-center shadow-lg z-50 transition duration-300"
+    title="Add New Item">
+    +
+  </button>
+
+  <!-- Toggle Buttons -->
+  <div *ngIf="showOptions" class="fixed bottom-24 right-6 flex flex-col gap-2 items-end z-50">
+    <button routerLink="/add-item/found" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow w-40">
+      Found Item
+    </button>
+    <button routerLink="/add-item/lost" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow w-40">
+      Lost Item
+    </button>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div *ngIf="showLogoutModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+    <div class="bg-gray-800 p-6 rounded-xl border border-gray-600 text-center shadow-xl w-80">
+      <h2 class="text-lg font-bold text-white mb-4">Are you sure you want to logout?</h2>
+      <div class="flex justify-center gap-4">
+        <button (click)="logoutConfirmed()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md">Yes</button>
+        <button (click)="cancelLogout()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md">No</button>
+      </div>
+    </div>
+  </div>
+</div>

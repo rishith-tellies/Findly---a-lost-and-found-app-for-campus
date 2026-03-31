@@ -1,0 +1,41 @@
+<div class="min-h-screen bg-gray-900 text-white p-6 flex items-center justify-center relative">
+
+  <!-- 🔙 Back Button -->
+  <button
+    (click)="goBack()"
+    class="absolute top-4 left-4 text-sm flex items-center gap-1 text-emerald-400 hover:text-white transition"
+  >
+    <span class="text-xl">←</span> Back
+  </button>
+
+  <div class="bg-gray-800/70 border border-emerald-600 rounded-xl shadow-lg w-full max-w-md p-6 text-center">
+
+    <!-- 🔃 Loading -->
+    <div *ngIf="isLoading" class="text-gray-400">
+      <div class="animate-spin h-6 w-6 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto"></div>
+      <p class="mt-2">Loading profile...</p>
+    </div>
+
+    <!-- ❌ Error -->
+    <div *ngIf="!isLoading && errorMessage" class="text-red-500">
+      {{ errorMessage }}
+    </div>
+
+    <!-- ✅ Profile Info -->
+    <ng-container *ngIf="!isLoading && !errorMessage">
+      <h2 class="text-2xl font-bold text-emerald-400 mb-4">👤 User Profile</h2>
+
+      <div class="text-left space-y-4">
+        <div>
+          <span class="font-semibold text-gray-300">Full Name:</span>
+          <p class="text-lg text-white">{{ name }}</p>
+        </div>
+        <div>
+          <span class="font-semibold text-gray-300">Email:</span>
+          <p class="text-lg text-white">{{ email }}</p>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>
